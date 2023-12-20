@@ -17,6 +17,7 @@ dependencies:
   intl: ^0.18.1
   riverpod: ^2.4.9
   riverpod_annotation: ^2.3.3
+  share_handler: ^0.0.20
 
 dev_dependencies:
   bloc_test: ^9.1.5

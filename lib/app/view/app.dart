@@ -1,4 +1,5 @@
 import 'package:ai_pocket_tools/l10n/l10n.dart';
+import 'package:ai_pocket_tools/shared_items/shared_items.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -17,7 +18,7 @@ class App extends StatelessWidget {
         ),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: Container(),
+        home: const SharedItemsPage(),
       ),
     );
   }
