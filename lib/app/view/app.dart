@@ -1,4 +1,3 @@
-import 'package:ai_pocket_tools/counter/counter.dart';
 import 'package:ai_pocket_tools/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +15,7 @@ class App extends StatelessWidget {
       ),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: const CounterPage(),
+      home: Container(),
     );
   }
 }
