@@ -17,6 +17,7 @@ dependencies:
     sdk: flutter
   flutter_riverpod: ^2.4.9
   fpdart: ^1.1.0
+  http: ^1.1.2
   intl: ^0.18.1
   path: ^1.8.3
   path_provider: ^2.1.1

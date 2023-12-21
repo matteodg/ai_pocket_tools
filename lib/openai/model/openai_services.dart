@@ -2,10 +2,12 @@ import 'dart:io';
 
 import 'package:ai_pocket_tools/shared_items/model/image_description.dart';
 import 'package:ai_pocket_tools/shared_items/model/summarization_service.dart';
+import 'package:ai_pocket_tools/shared_items/model/text_to_image.dart';
 import 'package:ai_pocket_tools/shared_items/model/transcription_service.dart';
 import 'package:ai_pocket_tools/shared_items/model/translation_service.dart';
 import 'package:dart_openai/dart_openai.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:path/path.dart';
 import 'package:riverpod/riverpod.dart';
 
 final transcriptionServiceProvider = Provider<TranscriptionService>((ref) {
@@ -23,6 +25,11 @@ final summarizationServiceProvider = Provider<SummarizationService>((ref) {
 final imageDescriptionServiceProvider = Provider<ImageDescriptionService>(
   (ref) => ref.watch(openaiServicesProvider),
 );
+
+final textToImageServiceProvider = Provider<TextToImageService>(
+  (ref) => ref.watch(openaiServicesProvider),
+);
+
 final openaiServicesProvider = Provider<OpenAIServices>((ref) {
   return OpenAIServices();
 });
@@ -32,7 +39,8 @@ class OpenAIServices
         TranscriptionService,
         TranslationService,
         SummarizationService,
-        ImageDescriptionService {
+        ImageDescriptionService,
+        TextToImageService {
   @override
   TaskEither<String, String> transcribe(File audio) {
     return TaskEither.tryCatch(
@@ -164,4 +172,22 @@ class OpenAIServices
       (error, stackTrace) => 'Cannot describe $imageUrl: $error',
     );
   }
+
+  @override
+  TaskEither<String, String> textToImage(String text, File file) {
+    return TaskEither.tryCatch(() async {
+      OpenAI.apiKey = const String.fromEnvironment('OPENAI_API_KEY');
+      final response = await OpenAI.instance.image.create(
+        model: 'dall-e-3',
+        prompt: text,
+        n: 1,
+        responseFormat: OpenAIImageResponseFormat.url,
+        size: OpenAIImageSize.size1024,
+        style: OpenAIImageStyle.vivid,
+        quality: OpenAIImageQuality.hd,
+      );
+      return response.data.first.url!;
+    }, (error, stackTrace) => 'Cannot create an image file: $error');
+  }
+
 }

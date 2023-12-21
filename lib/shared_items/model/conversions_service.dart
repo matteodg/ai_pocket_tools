@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:ai_pocket_tools/openai/model/openai_services.dart';
 import 'package:ai_pocket_tools/shared_items/model/image_description.dart';
 import 'package:ai_pocket_tools/shared_items/model/local_storage_service.dart';
 import 'package:ai_pocket_tools/shared_items/model/remote_storage_service.dart';
 import 'package:ai_pocket_tools/shared_items/model/shared_items_model.dart';
 import 'package:ai_pocket_tools/shared_items/model/summarization_service.dart';
+import 'package:ai_pocket_tools/shared_items/model/text_to_image.dart';
 import 'package:ai_pocket_tools/shared_items/model/transcription_service.dart';
 import 'package:ai_pocket_tools/shared_items/model/translation_service.dart';
 import 'package:ai_pocket_tools/supabase/model/supabase_services.dart';
@@ -19,6 +22,7 @@ final conversionsServiceProvider = Provider<ConversionsService>((ref) {
     ref.watch(translationServiceProvider),
     ref.watch(summarizationServiceProvider),
     ref.watch(imageDescriptionServiceProvider),
+    ref.watch(textToImageServiceProvider),
   );
 });
 
@@ -30,8 +34,10 @@ class ConversionsService {
     this.translationService,
     this.summarizationService,
     this.imageDescriptionService,
+    this.textToImageService,
   );
 
+  final TextToImageService textToImageService;
   final ImageDescriptionService imageDescriptionService;
   final SummarizationService summarizationService;
   final TranscriptionService transcriptionService;
@@ -63,5 +69,21 @@ class ConversionsService {
       final imageUrl = await _(remoteStorageService.uploadFile(imageItem.file));
       return _(imageDescriptionService.describe(imageUrl));
     }).map((s) => TextItem(const Uuid().v4(), s));
+  }
+
+  TaskEither<String, ImageItem> textToImage(TextItem src) {
+    final newId = const Uuid().v4();
+    return TaskEither<String, File>.Do((_) async {
+      final directory = await _(localStorageService.getDocumentsDirectory());
+      final file = File('${directory.path}/$newId.jpg');
+
+      if (file.existsSync()) {
+        await _(localStorageService.deleteFile(file));
+      }
+
+      final url = await _(textToImageService.textToImage(src.text, file));
+
+      return _(localStorageService.downloadImage(url, file));
+    }).map((file) => ImageItem(newId, file));
   }
 }

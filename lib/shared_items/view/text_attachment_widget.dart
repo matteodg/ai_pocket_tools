@@ -23,6 +23,28 @@ class TextAttachmentWidget extends ConsumerWidget {
                   IconButton.filledTonal(
                     onPressed: () async {
                       final state = ScaffoldMessenger.of(context);
+                      final taskEither =
+                          conversionsService.textToImage(textItem);
+                      final either = await taskEither.run();
+                      either.fold(
+                        (error) {
+                          state.showSnackBar(
+                              SnackBar(content: Text('Failure: $error')));
+                          return null;
+                        },
+                        (imageItem) {
+                          sharedItemsModel.addItem(imageItem);
+                          return null;
+                        },
+                      );
+                    },
+                    tooltip: 'Text-to-Image',
+                    icon: const Icon(Icons.image),
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton.filledTonal(
+                    onPressed: () async {
+                      final state = ScaffoldMessenger.of(context);
                       final taskEither = conversionsService.summarize(textItem);
                       final either = await taskEither.run();
                       state.showSnackBar(
