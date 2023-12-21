@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:ai_pocket_tools/shared_items/model/image_description.dart';
 import 'package:ai_pocket_tools/shared_items/model/summarization_service.dart';
 import 'package:ai_pocket_tools/shared_items/model/transcription_service.dart';
 import 'package:ai_pocket_tools/shared_items/model/translation_service.dart';
@@ -19,12 +20,19 @@ final summarizationServiceProvider = Provider<SummarizationService>((ref) {
   return ref.watch(openaiServicesProvider);
 });
 
+final imageDescriptionServiceProvider = Provider<ImageDescriptionService>(
+  (ref) => ref.watch(openaiServicesProvider),
+);
 final openaiServicesProvider = Provider<OpenAIServices>((ref) {
   return OpenAIServices();
 });
 
 class OpenAIServices
-    implements TranscriptionService, TranslationService, SummarizationService {
+    implements
+        TranscriptionService,
+        TranslationService,
+        SummarizationService,
+        ImageDescriptionService {
   @override
   TaskEither<String, String> transcribe(File audio) {
     return TaskEither.tryCatch(
@@ -120,6 +128,40 @@ class OpenAIServices
         return response.choices.first.message.content!.first.text!;
       },
       (error, stackTrace) => 'Cannot summarize: $error',
+    );
+  }
+
+  @override
+  TaskEither<String, String> describe(String imageUrl) {
+    return TaskEither.tryCatch(
+      () async {
+        OpenAI.apiKey = const String.fromEnvironment('OPENAI_API_KEY');
+        final response = await OpenAI.instance.chat.create(
+          model: 'gpt-4-vision-preview',
+          messages: [
+            OpenAIChatCompletionChoiceMessageModel(
+              role: OpenAIChatMessageRole.system,
+              content: [
+                OpenAIChatCompletionChoiceMessageContentItemModel.text(
+                  '''
+                  What do you see in the following image?
+                  ''',
+                ),
+              ],
+            ),
+            OpenAIChatCompletionChoiceMessageModel(
+              role: OpenAIChatMessageRole.user,
+              content: [
+                OpenAIChatCompletionChoiceMessageContentItemModel.imageUrl(
+                  imageUrl,
+                ),
+              ],
+            ),
+          ],
+        );
+        return response.choices.first.message.content!.first.text!;
+      },
+      (error, stackTrace) => 'Cannot describe $imageUrl: $error',
     );
   }
 }

@@ -23,6 +23,27 @@ class ImageAttachmentWidget extends ConsumerWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
+            Expanded(
+              child: Row(
+                children: [
+                  IconButton.filledTonal(
+                    onPressed: () async {
+                      final taskEither = conversionsService.describe(imageItem);
+                      final either = await taskEither.run();
+                      await either.fold(
+                        (l) => null,
+                        (textItem) async {
+                          await sharedItemsModel.addItem(textItem);
+                        },
+                      );
+                    },
+                    tooltip: 'Describe',
+                    icon: const Icon(Icons.description),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
             IconButton.filledTonal(
               onPressed: () async {
                 await sharedItemsModel.removeItem(imageItem);

@@ -1,3 +1,5 @@
 {
   "OPENAI_API_KEY": "sk-test-1",
+  "SUPABASE_URL": "https://xxxxxxxxxxxxxxxxxxxx.supabase.co",
+  "SUPABASE_PUBLIC_KEY": "public-key",
 }
