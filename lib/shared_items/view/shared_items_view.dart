@@ -3,6 +3,7 @@ import 'package:ai_pocket_tools/shared_items/shared_items.dart';
 import 'package:ai_pocket_tools/shared_items/view/audio_attachment_widget.dart';
 import 'package:ai_pocket_tools/shared_items/view/image_attachment_widget.dart';
 import 'package:ai_pocket_tools/shared_items/view/text_attachment_widget.dart';
+import 'package:ai_pocket_tools/shared_items/view/video_attachment_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_handler/share_handler.dart';
@@ -87,6 +88,7 @@ extension on SharedItem {
       final TextItem textItem => TextAttachmentWidget(textItem),
       final AudioItem audioItem => AudioAttachmentWidget(audioItem),
       final ImageItem imageItem => ImageAttachmentWidget(imageItem),
+      final VideoItem videoItem => VideoAttachmentWidget(videoItem),
       _ => throw UnsupportedError('Unsupported item type: $runtimeType')
     };
   }
