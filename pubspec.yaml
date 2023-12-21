@@ -10,6 +10,7 @@ dependencies:
   audioplayers: ^5.2.1
   bloc: ^8.1.2
   dart_openai: ^5.0.0
+  ffmpeg_kit_flutter_audio: ^6.0.3
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.3

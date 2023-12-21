@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:ffmpeg_kit_flutter_audio/ffmpeg_kit.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod/riverpod.dart';
+import 'package:uuid/uuid.dart';
 
 final localStorageServiceProvider = Provider<LocalStorageService>((ref) {
   return LocalStorageService();
@@ -32,4 +34,21 @@ class LocalStorageService {
     }, (error, stackTrace) => 'Cannot download image from $url: $error');
   }
 
+  TaskEither<String, File> convertAudio(File file, String newFilePath) {
+    return TaskEither.tryCatch(() async {
+      final directory = await getApplicationDocumentsDirectory();
+      final newFile = File('${directory.path}/$newFilePath');
+      final session = await FFmpegKit.execute('-i ${file.path} $newFilePath');
+      final returnCode = await session.getReturnCode();
+      if (returnCode == null ||
+          returnCode.isValueCancel() ||
+          returnCode.isValueError()) {
+        throw Exception(
+            'Cannot convert audio file ${file.path} to $newFilePath');
+      }
+      return newFile;
+    },
+        (error, stackTrace) =>
+            'Cannot convert audio file ${file.path} to $newFilePath: $error');
+  }
 }

@@ -51,8 +51,14 @@ class ConversionsService {
 
   TaskEither<String, TextItem> transcribe(AudioItem src) {
     return TaskEither<String, String>.Do((_) async {
-      // final newFile = await _(localStorageService.convertAudio(src.file, 'mp3'));
-      return _(transcriptionService.transcribe(src.file));
+      var newFile = src.file;
+      if (!src.file.path.endsWith('.mp3')) {
+        final id = const Uuid().v4();
+        newFile = await _(
+          localStorageService.convertAudio(src.file, '$id.mp3'),
+        );
+      }
+      return _(transcriptionService.transcribe(newFile));
     }).map((text) => TextItem(const Uuid().v4(), text));
   }
 
