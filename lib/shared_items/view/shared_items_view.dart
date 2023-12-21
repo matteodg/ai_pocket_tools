@@ -83,6 +83,7 @@ class _SharedItemsViewState extends ConsumerState<SharedItemsView> {
 extension on SharedItem {
   Widget createWidget() {
     return switch (this) {
+      final TextItem textItem => TextAttachmentWidget(textItem),
       final AudioItem audioItem => AudioAttachmentWidget(audioItem),
       _ => throw UnsupportedError('Unsupported item type: $runtimeType')
     };
