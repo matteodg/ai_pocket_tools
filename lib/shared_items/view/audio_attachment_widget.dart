@@ -5,6 +5,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
+import 'package:share_plus/share_plus.dart';
 
 class AudioAttachmentWidget extends ConsumerWidget {
   const AudioAttachmentWidget(this.audioItem, {super.key});
@@ -56,6 +57,19 @@ class AudioAttachmentWidget extends ConsumerWidget {
                   ),
                 ],
               ),
+            ),
+            const SizedBox(width: 8),
+            IconButton.filledTonal(
+              onPressed: () async {
+                final state = ScaffoldMessenger.of(context);
+                final result = await Share.shareXFiles([XFile(path)]);
+                if (result.status == ShareResultStatus.success) {
+                  state.showSnackBar(
+                      const SnackBar(content: Text('Successfully shared')));
+                }
+              },
+              tooltip: 'Share',
+              icon: const Icon(Icons.share),
             ),
             const SizedBox(width: 8),
             IconButton.filledTonal(
