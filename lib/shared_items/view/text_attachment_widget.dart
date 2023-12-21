@@ -45,6 +45,28 @@ class TextAttachmentWidget extends ConsumerWidget {
                   IconButton.filledTonal(
                     onPressed: () async {
                       final state = ScaffoldMessenger.of(context);
+                      final taskEither =
+                          conversionsService.textToSpeech(textItem);
+                      final either = await taskEither.run();
+                      either.fold(
+                        (error) {
+                          state.showSnackBar(
+                              SnackBar(content: Text('Failure: $error')));
+                          return null;
+                        },
+                        (audioItem) {
+                          sharedItemsModel.addItem(audioItem);
+                          return null;
+                        },
+                      );
+                    },
+                    tooltip: 'Text-to-Speech',
+                    icon: const Icon(Icons.volume_up),
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton.filledTonal(
+                    onPressed: () async {
+                      final state = ScaffoldMessenger.of(context);
                       final taskEither = conversionsService.summarize(textItem);
                       final either = await taskEither.run();
                       state.showSnackBar(

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:ai_pocket_tools/shared_items/model/image_description.dart';
 import 'package:ai_pocket_tools/shared_items/model/summarization_service.dart';
 import 'package:ai_pocket_tools/shared_items/model/text_to_image.dart';
+import 'package:ai_pocket_tools/shared_items/model/text_to_speech.dart';
 import 'package:ai_pocket_tools/shared_items/model/transcription_service.dart';
 import 'package:ai_pocket_tools/shared_items/model/translation_service.dart';
 import 'package:dart_openai/dart_openai.dart';
@@ -30,6 +31,10 @@ final textToImageServiceProvider = Provider<TextToImageService>(
   (ref) => ref.watch(openaiServicesProvider),
 );
 
+final textToSpeechServiceProvider = Provider<TextToSpeechService>(
+  (ref) => ref.watch(openaiServicesProvider),
+);
+
 final openaiServicesProvider = Provider<OpenAIServices>((ref) {
   return OpenAIServices();
 });
@@ -40,6 +45,7 @@ class OpenAIServices
         TranslationService,
         SummarizationService,
         ImageDescriptionService,
+        TextToSpeechService,
         TextToImageService {
   @override
   TaskEither<String, String> transcribe(File audio) {
@@ -190,4 +196,21 @@ class OpenAIServices
     }, (error, stackTrace) => 'Cannot create an image file: $error');
   }
 
+  @override
+  TaskEither<String, File> textToSpeech(String text, File file, String ext) {
+    final format = OpenAIAudioSpeechResponseFormat.values //
+        .firstWhere((element) => ext == element.name);
+
+    return TaskEither.tryCatch(() async {
+      OpenAI.apiKey = const String.fromEnvironment('OPENAI_API_KEY');
+      return OpenAI.instance.audio.createSpeech(
+        model: 'tts-1',
+        input: text,
+        voice: 'nova',
+        responseFormat: format,
+        outputDirectory: file.parent,
+        outputFileName: basenameWithoutExtension(file.path),
+      );
+    }, (error, stackTrace) => 'Cannot create an audio file using TTS: $error');
+  }
 }

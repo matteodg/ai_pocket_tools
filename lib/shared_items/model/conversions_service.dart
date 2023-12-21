@@ -7,6 +7,7 @@ import 'package:ai_pocket_tools/shared_items/model/remote_storage_service.dart';
 import 'package:ai_pocket_tools/shared_items/model/shared_items_model.dart';
 import 'package:ai_pocket_tools/shared_items/model/summarization_service.dart';
 import 'package:ai_pocket_tools/shared_items/model/text_to_image.dart';
+import 'package:ai_pocket_tools/shared_items/model/text_to_speech.dart';
 import 'package:ai_pocket_tools/shared_items/model/transcription_service.dart';
 import 'package:ai_pocket_tools/shared_items/model/translation_service.dart';
 import 'package:ai_pocket_tools/supabase/model/supabase_services.dart';
@@ -23,6 +24,7 @@ final conversionsServiceProvider = Provider<ConversionsService>((ref) {
     ref.watch(summarizationServiceProvider),
     ref.watch(imageDescriptionServiceProvider),
     ref.watch(textToImageServiceProvider),
+    ref.watch(textToSpeechServiceProvider),
   );
 });
 
@@ -35,9 +37,11 @@ class ConversionsService {
     this.summarizationService,
     this.imageDescriptionService,
     this.textToImageService,
+    this.textToSpeechService,
   );
 
   final TextToImageService textToImageService;
+  final TextToSpeechService textToSpeechService;
   final ImageDescriptionService imageDescriptionService;
   final SummarizationService summarizationService;
   final TranscriptionService transcriptionService;
@@ -69,6 +73,20 @@ class ConversionsService {
       final imageUrl = await _(remoteStorageService.uploadFile(imageItem.file));
       return _(imageDescriptionService.describe(imageUrl));
     }).map((s) => TextItem(const Uuid().v4(), s));
+  }
+
+  TaskEither<String, AudioItem> textToSpeech(TextItem src) {
+    final newId = const Uuid().v4();
+    return TaskEither<String, File>.Do((_) async {
+      final directory = await _(localStorageService.getDocumentsDirectory());
+      final file = File('${directory.path}/$newId.mp3');
+
+      if (file.existsSync()) {
+        await _(localStorageService.deleteFile(file));
+      }
+
+      return _(textToSpeechService.textToSpeech(src.text, file, 'mp3'));
+    }).map((file) => AudioItem(newId, file));
   }
 
   TaskEither<String, ImageItem> textToImage(TextItem src) {
