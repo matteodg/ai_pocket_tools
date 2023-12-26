@@ -32,14 +32,19 @@ class ImageAttachmentWidget extends ConsumerWidget {
                       final state = ScaffoldMessenger.of(context);
                       final taskEither = conversionsService.describe(imageItem);
                       final either = await taskEither.run();
-                      final String text = await either.fold(
-                        (failure) => '$failure',
-                        (textItem) async {
-                          await sharedItemsModel.addItem(textItem);
-                          return 'Image described successfully';
-                        },
+                      state.showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            await either.fold(
+                              (failure) => failure,
+                              (textItem) async {
+                                await sharedItemsModel.addItem(textItem);
+                                return 'Image described successfully';
+                              },
+                            ),
+                          ),
+                        ),
                       );
-                      state.showSnackBar(SnackBar(content: Text(text)));
                     },
                     tooltip: 'Describe',
                     icon: const Icon(Icons.description),
@@ -55,11 +60,13 @@ class ImageAttachmentWidget extends ConsumerWidget {
                   final result = await Share.shareXFiles([XFile(path)]);
                   if (result.status == ShareResultStatus.success) {
                     state.showSnackBar(
-                        const SnackBar(content: Text('Successfully shared')));
+                      const SnackBar(content: Text('Successfully shared')),
+                    );
                   }
                 } catch (e) {
                   state.showSnackBar(
-                      const SnackBar(content: Text('Failed to share')));
+                    const SnackBar(content: Text('Failed to share')),
+                  );
                 }
               },
               tooltip: 'Share',

@@ -17,7 +17,9 @@ class FloatingActionMenu extends ConsumerWidget {
   }
 
   SpeedDial _buildFloatingActionButton(
-      BuildContext context, SharedItemsModel sharedItemsModel) {
+    BuildContext context,
+    SharedItemsModel sharedItemsModel,
+  ) {
     return SpeedDial(
       icon: Icons.add,
       overlayColor: Colors.black,
@@ -30,7 +32,7 @@ class FloatingActionMenu extends ConsumerWidget {
           label: 'Text',
           onTap: () async {
             final textEditingController = TextEditingController();
-            await showDialog(
+            await showDialog<AlertDialog>(
               context: context,
               builder: (context) {
                 return AlertDialog(
@@ -48,7 +50,9 @@ class FloatingActionMenu extends ConsumerWidget {
                         final navigatorState = Navigator.of(context);
                         await sharedItemsModel.addItem(
                           TextItem(
-                              const Uuid().v4(), textEditingController.text),
+                            const Uuid().v4(),
+                            textEditingController.text,
+                          ),
                         );
                         navigatorState.pop();
                       },

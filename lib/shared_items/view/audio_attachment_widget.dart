@@ -33,24 +33,26 @@ class AudioAttachmentWidget extends ConsumerWidget {
                       final taskEither =
                           conversionsService.transcribe(audioItem);
                       final either = await taskEither.run();
-                      state.showSnackBar(either.fold(
-                        (String error) {
-                          return SnackBar(
-                            content: Text('Failure: $error'),
-                            showCloseIcon: true,
-                            behavior: SnackBarBehavior.fixed,
-                            duration: const Duration(seconds: 10),
-                          );
-                        },
-                        (textItem) {
-                          sharedItemsModel.addItem(textItem);
-                          return const SnackBar(
-                            content: Text('Transcription complete'),
-                            showCloseIcon: false,
-                            behavior: SnackBarBehavior.floating,
-                          );
-                        },
-                      ));
+                      state.showSnackBar(
+                        either.fold(
+                          (String error) {
+                            return SnackBar(
+                              content: Text('Failure: $error'),
+                              showCloseIcon: true,
+                              behavior: SnackBarBehavior.fixed,
+                              duration: const Duration(seconds: 10),
+                            );
+                          },
+                          (textItem) {
+                            sharedItemsModel.addItem(textItem);
+                            return const SnackBar(
+                              content: Text('Transcription complete'),
+                              showCloseIcon: false,
+                              behavior: SnackBarBehavior.floating,
+                            );
+                          },
+                        ),
+                      );
                     },
                     tooltip: 'Transcribe',
                     icon: const Icon(Icons.transcribe),
@@ -65,7 +67,8 @@ class AudioAttachmentWidget extends ConsumerWidget {
                 final result = await Share.shareXFiles([XFile(path)]);
                 if (result.status == ShareResultStatus.success) {
                   state.showSnackBar(
-                      const SnackBar(content: Text('Successfully shared')));
+                    const SnackBar(content: Text('Successfully shared')),
+                  );
                 }
               },
               tooltip: 'Share',

@@ -29,9 +29,9 @@ class _PlayerWidgetState extends State<PlayerWidget> {
 
   bool get _isPaused => _playerState == PlayerState.paused;
 
-  String get _durationText => _duration?.toString().split('.').first ?? '';
-
-  String get _positionText => _position?.toString().split('.').first ?? '';
+  // String get _durationText => _duration?.toString().split('.').first ?? '';
+  //
+  // String get _positionText => _position?.toString().split('.').first ?? '';
 
   AudioPlayer get player => widget.player;
 

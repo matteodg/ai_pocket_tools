@@ -30,7 +30,8 @@ class TextAttachmentWidget extends ConsumerWidget {
                       either.fold(
                         (error) {
                           state.showSnackBar(
-                              SnackBar(content: Text('Failure: $error')));
+                            SnackBar(content: Text('Failure: $error')),
+                          );
                           return null;
                         },
                         (imageItem) {
@@ -52,7 +53,8 @@ class TextAttachmentWidget extends ConsumerWidget {
                       either.fold(
                         (error) {
                           state.showSnackBar(
-                              SnackBar(content: Text('Failure: $error')));
+                            SnackBar(content: Text('Failure: $error')),
+                          );
                           return null;
                         },
                         (audioItem) {
@@ -134,7 +136,8 @@ class TextAttachmentWidget extends ConsumerWidget {
                 final result = await Share.shareWithResult(textItem.text);
                 if (result.status == ShareResultStatus.success) {
                   state.showSnackBar(
-                      const SnackBar(content: Text('Successfully shared')));
+                    const SnackBar(content: Text('Successfully shared')),
+                  );
                 }
               },
               tooltip: 'Share',

@@ -72,10 +72,14 @@ class _VideoAttachmentWidgetState extends ConsumerState<VideoAttachmentWidget> {
                     onPressed: () async {
                       final state = ScaffoldMessenger.of(context);
                       final result = await Share.shareWithResult(
-                          widget.videoItem.file.path);
+                        widget.videoItem.file.path,
+                      );
                       if (result.status == ShareResultStatus.success) {
-                        state.showSnackBar(const SnackBar(
-                            content: Text('Successfully shared')));
+                        state.showSnackBar(
+                          const SnackBar(
+                            content: Text('Successfully shared'),
+                          ),
+                        );
                       }
                     },
                     tooltip: 'Share',

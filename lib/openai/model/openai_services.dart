@@ -181,19 +181,22 @@ class OpenAIServices
 
   @override
   TaskEither<String, String> textToImage(String text, File file) {
-    return TaskEither.tryCatch(() async {
-      OpenAI.apiKey = const String.fromEnvironment('OPENAI_API_KEY');
-      final response = await OpenAI.instance.image.create(
-        model: 'dall-e-3',
-        prompt: text,
-        n: 1,
-        responseFormat: OpenAIImageResponseFormat.url,
-        size: OpenAIImageSize.size1024,
-        style: OpenAIImageStyle.vivid,
-        quality: OpenAIImageQuality.hd,
-      );
-      return response.data.first.url!;
-    }, (error, stackTrace) => 'Cannot create an image file: $error');
+    return TaskEither.tryCatch(
+      () async {
+        OpenAI.apiKey = const String.fromEnvironment('OPENAI_API_KEY');
+        final response = await OpenAI.instance.image.create(
+          model: 'dall-e-3',
+          prompt: text,
+          n: 1,
+          responseFormat: OpenAIImageResponseFormat.url,
+          size: OpenAIImageSize.size1024,
+          style: OpenAIImageStyle.vivid,
+          quality: OpenAIImageQuality.hd,
+        );
+        return response.data.first.url!;
+      },
+      (error, stackTrace) => 'Cannot create an image file: $error',
+    );
   }
 
   @override
@@ -201,16 +204,19 @@ class OpenAIServices
     final format = OpenAIAudioSpeechResponseFormat.values //
         .firstWhere((element) => ext == element.name);
 
-    return TaskEither.tryCatch(() async {
-      OpenAI.apiKey = const String.fromEnvironment('OPENAI_API_KEY');
-      return OpenAI.instance.audio.createSpeech(
-        model: 'tts-1',
-        input: text,
-        voice: 'nova',
-        responseFormat: format,
-        outputDirectory: file.parent,
-        outputFileName: basenameWithoutExtension(file.path),
-      );
-    }, (error, stackTrace) => 'Cannot create an audio file using TTS: $error');
+    return TaskEither.tryCatch(
+      () async {
+        OpenAI.apiKey = const String.fromEnvironment('OPENAI_API_KEY');
+        return OpenAI.instance.audio.createSpeech(
+          model: 'tts-1',
+          input: text,
+          voice: 'nova',
+          responseFormat: format,
+          outputDirectory: file.parent,
+          outputFileName: basenameWithoutExtension(file.path),
+        );
+      },
+      (error, stackTrace) => 'Cannot create an audio file using TTS: $error',
+    );
   }
 }
