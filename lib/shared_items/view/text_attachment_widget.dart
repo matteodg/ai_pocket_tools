@@ -1,6 +1,7 @@
 import 'package:ai_pocket_tools/shared_items/model/conversions_service.dart';
 import 'package:ai_pocket_tools/shared_items/model/shared_items_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -15,7 +16,7 @@ class TextAttachmentWidget extends ConsumerWidget {
     final sharedItemsModel = ref.read(sharedItemsModelProvider.notifier);
     return Column(
       children: [
-        SelectableText(textItem.text),
+        MarkdownBody(data: textItem.text),
         Row(
           children: [
             Expanded(
