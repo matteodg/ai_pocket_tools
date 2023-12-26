@@ -35,21 +35,21 @@ sealed class SharedItem {
   final String id;
 }
 
-abstract class _FileItem extends SharedItem {
-  _FileItem(super.id, this.file);
+abstract class FileItem extends SharedItem {
+  FileItem(super.id, this.file);
 
   final File file;
 }
 
-class AudioItem extends _FileItem {
+class AudioItem extends FileItem {
   AudioItem(super.id, super.file);
 }
 
-class ImageItem extends _FileItem {
+class ImageItem extends FileItem {
   ImageItem(super.id, super.file);
 }
 
-class VideoItem extends _FileItem {
+class VideoItem extends FileItem {
   VideoItem(super.id, super.file);
 }
 

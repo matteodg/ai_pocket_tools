@@ -71,14 +71,18 @@ class _VideoAttachmentWidgetState extends ConsumerState<VideoAttachmentWidget> {
                   IconButton.filledTonal(
                     onPressed: () async {
                       final state = ScaffoldMessenger.of(context);
-                      final result = await Share.shareWithResult(
-                        widget.videoItem.file.path,
-                      );
-                      if (result.status == ShareResultStatus.success) {
+                      try {
+                        await Share.share(
+                          widget.videoItem.file.path,
+                        );
                         state.showSnackBar(
                           const SnackBar(
                             content: Text('Successfully shared'),
                           ),
+                        );
+                      } catch (e) {
+                        state.showSnackBar(
+                          SnackBar(content: Text('Failed to share: $e')),
                         );
                       }
                     },
