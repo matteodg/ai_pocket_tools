@@ -8,11 +8,15 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = ColorScheme.fromSeed(
+      seedColor: Colors.blue,
+    );
     return ProviderScope(
       child: MaterialApp(
         theme: ThemeData(
+          colorScheme: colorScheme,
           appBarTheme: AppBarTheme(
-            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+            backgroundColor: colorScheme.inversePrimary,
           ),
           useMaterial3: true,
         ),
