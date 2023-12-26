@@ -11,17 +11,17 @@ import 'package:fpdart/fpdart.dart';
 import 'package:path/path.dart';
 import 'package:riverpod/riverpod.dart';
 
-final transcriptionServiceProvider = Provider<TranscriptionService>((ref) {
-  return ref.watch(openaiServicesProvider);
-});
+final transcriptionServiceProvider = Provider<TranscriptionService>(
+  (ref) => ref.watch(openaiServicesProvider),
+);
 
-final translationServiceProvider = Provider<TranslationService>((ref) {
-  return ref.watch(openaiServicesProvider);
-});
+final translationServiceProvider = Provider<TranslationService>(
+  (ref) => ref.watch(openaiServicesProvider),
+);
 
-final summarizationServiceProvider = Provider<SummarizationService>((ref) {
-  return ref.watch(openaiServicesProvider);
-});
+final summarizationServiceProvider = Provider<SummarizationService>(
+  (ref) => ref.watch(openaiServicesProvider),
+);
 
 final imageDescriptionServiceProvider = Provider<ImageDescriptionService>(
   (ref) => ref.watch(openaiServicesProvider),
@@ -35,9 +35,9 @@ final textToSpeechServiceProvider = Provider<TextToSpeechService>(
   (ref) => ref.watch(openaiServicesProvider),
 );
 
-final openaiServicesProvider = Provider<OpenAIServices>((ref) {
-  return OpenAIServices();
-});
+final openaiServicesProvider = Provider<OpenAIServices>(
+  (ref) => OpenAIServices(),
+);
 
 class OpenAIServices
     implements

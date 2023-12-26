@@ -29,14 +29,17 @@ class ImageAttachmentWidget extends ConsumerWidget {
                 children: [
                   IconButton.filledTonal(
                     onPressed: () async {
+                      final state = ScaffoldMessenger.of(context);
                       final taskEither = conversionsService.describe(imageItem);
                       final either = await taskEither.run();
-                      await either.fold(
-                        (l) => null,
+                      final String text = await either.fold(
+                        (failure) => '$failure',
                         (textItem) async {
                           await sharedItemsModel.addItem(textItem);
+                          return 'Image described successfully';
                         },
                       );
+                      state.showSnackBar(SnackBar(content: Text(text)));
                     },
                     tooltip: 'Describe',
                     icon: const Icon(Icons.description),

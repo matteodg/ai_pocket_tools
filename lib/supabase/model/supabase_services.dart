@@ -39,7 +39,9 @@ class SupabaseServices implements RemoteStorageService {
               basename(file.path),
             );
       },
-      (_, __) => 'Cannot upload file ${file.path}',
+      (error, stackTrace) {
+        return 'Cannot upload file ${file.path}: $error';
+      },
     );
   }
 }
