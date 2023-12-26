@@ -32,12 +32,10 @@ abstract class FileAttachmentWidget<T extends FileItem>
               onPressed: () async {
                 final state = ScaffoldMessenger.of(context);
                 try {
-                  final result = await Share.shareXFiles([XFile(path)]);
-                  if (result.status == ShareResultStatus.success) {
-                    state.showSnackBar(
-                      const SnackBar(content: Text('Successfully shared')),
-                    );
-                  }
+                  // ignore: deprecated_member_use
+                  await Share.shareFiles(
+                    [path],
+                  );
                 } catch (e) {
                   state.showSnackBar(
                     SnackBar(content: Text('Failed to share: $e')),
