@@ -1,5 +1,5 @@
 import 'package:ai_pocket_tools/l10n/l10n.dart';
-import 'package:ai_pocket_tools/shared_items/shared_items.dart';
+import 'package:ai_pocket_tools/shared_items/view/shared_items_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

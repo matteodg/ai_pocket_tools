@@ -1,5 +1,6 @@
 import 'package:ai_pocket_tools/l10n/l10n.dart';
-import 'package:ai_pocket_tools/shared_items/shared_items.dart';
+import 'package:ai_pocket_tools/shared_items/model/media_provider.dart';
+import 'package:ai_pocket_tools/shared_items/model/shared_items_model.dart';
 import 'package:ai_pocket_tools/shared_items/view/audio_attachment_widget.dart';
 import 'package:ai_pocket_tools/shared_items/view/floating_action_menu.dart';
 import 'package:ai_pocket_tools/shared_items/view/image_attachment_widget.dart';

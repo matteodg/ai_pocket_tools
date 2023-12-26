@@ -1,4 +1,4 @@
-import 'package:ai_pocket_tools/shared_items/shared_items.dart';
+import 'package:ai_pocket_tools/shared_items/model/shared_items_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
