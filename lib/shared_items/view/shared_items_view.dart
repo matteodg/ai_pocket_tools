@@ -25,35 +25,43 @@ class _SharedItemsViewState extends ConsumerState<SharedItemsView> {
   @override
   void initState() {
     super.initState();
+    _initialProcessMedia();
 
     ref.listenManual(
       mediaStreamProvider,
       (_, AsyncValue<SharedMedia?> next) => next.when(
-        data: (SharedMedia? media) async {
-          if (media == null) {
-            return;
-          }
-
-          final attachments = media.attachments;
-          if (attachments == null) {
-            return;
-          }
-
-          final sharedItemsModel = ref.read(sharedItemsModelProvider.notifier);
-          for (final attachment in attachments) {
-            if (attachment == null) {
-              continue;
-            }
-
-            attachment.toItem().map((item) async {
-              await sharedItemsModel.addItem(item);
-            });
-          }
-        },
+        data: _processMedia,
         error: (error, stacktrace) {},
         loading: () {},
       ),
     );
+  }
+
+  Future<void> _initialProcessMedia() async {
+    final media = await ShareHandlerPlatform.instance.getInitialSharedMedia();
+    await _processMedia(media);
+  }
+
+  Future<void> _processMedia(SharedMedia? media) async {
+    if (media == null) {
+      return;
+    }
+
+    final attachments = media.attachments;
+    if (attachments == null) {
+      return;
+    }
+
+    final sharedItemsModel = ref.read(sharedItemsModelProvider.notifier);
+    for (final attachment in attachments) {
+      if (attachment == null) {
+        continue;
+      }
+
+      attachment.toItem().map((item) async {
+        await sharedItemsModel.addItem(item);
+      });
+    }
   }
 
   @override
