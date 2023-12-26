@@ -6,6 +6,7 @@ import 'package:ai_pocket_tools/shared_items/view/video_attachment_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_handler/share_handler.dart';
+import 'package:uuid/uuid.dart';
 
 class SharedItemsView extends ConsumerStatefulWidget {
   const SharedItemsView({super.key});
@@ -41,12 +42,17 @@ class _SharedItemsViewState extends ConsumerState<SharedItemsView> {
       return;
     }
 
+    final sharedItemsModel = ref.read(sharedItemsModelProvider.notifier);
+    if (media.content != null) {
+      final textItem = TextItem(const Uuid().v4(), media.content!);
+      await sharedItemsModel.addItem(textItem);
+    }
+
     final attachments = media.attachments;
     if (attachments == null) {
       return;
     }
 
-    final sharedItemsModel = ref.read(sharedItemsModelProvider.notifier);
     for (final attachment in attachments) {
       if (attachment == null) {
         continue;
