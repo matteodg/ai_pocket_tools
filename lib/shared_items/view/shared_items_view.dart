@@ -2,6 +2,9 @@ import 'package:ai_pocket_tools/l10n/l10n.dart';
 import 'package:ai_pocket_tools/shared_items/shared_items.dart';
 import 'package:ai_pocket_tools/shared_items/view/audio_attachment_widget.dart';
 import 'package:ai_pocket_tools/shared_items/view/floating_action_menu.dart';
+import 'package:ai_pocket_tools/shared_items/view/image_attachment_widget.dart';
+import 'package:ai_pocket_tools/shared_items/view/services_drawer.dart';
+import 'package:ai_pocket_tools/shared_items/view/text_attachment_widget.dart';
 import 'package:ai_pocket_tools/shared_items/view/video_attachment_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -74,6 +77,7 @@ class _SharedItemsViewState extends ConsumerState<SharedItemsView> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndTop,
       floatingActionButton: const FloatingActionMenu(),
+      drawer: const ServicesDrawer(),
       body: Center(
         child: asyncSharedItemsList.when(
           data: (items) {
