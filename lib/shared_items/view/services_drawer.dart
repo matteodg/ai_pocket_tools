@@ -13,41 +13,64 @@ class ServicesDrawer extends StatelessWidget {
           const DrawerHeader(
             child: Text('Configuration'),
           ),
-          ListTile(
+          ExpansionTile(
             title: const Text('Image Description'),
-            onTap: () {},
+            children: [
+              RadioListTile(
+                value: 'OpenAI',
+                groupValue: 'OpenAI',
+                onChanged: (str) {},
+                title: const Text('OpenAI'),
+              ),
+              RadioListTile(
+                value: 'Ollama',
+                groupValue: 'OpenAI',
+                onChanged: (str) {},
+                title: const Text('Ollama'),
+              ),
+            ],
           ),
-          RadioListTile(
-            value: 'OpenAI',
-            groupValue: 'OpenAI',
-            onChanged: (str) {},
-            title: const Text('OpenAI'),
-          ),
-          RadioListTile(
-            value: 'Ollama',
-            groupValue: 'OpenAI',
-            onChanged: (str) {},
-            title: const Text('Ollama'),
-          ),
-          ListTile(
+          ExpansionTile(
             title: const Text('Transcription'),
-            onTap: () {},
+            children: [
+              RadioListTile(
+                value: 'OpenAI',
+                groupValue: 'OpenAI',
+                onChanged: (str) {},
+                title: const Text('OpenAI'),
+                subtitle: const Text(
+                  r'$0.0060 / minute (rounded to the nearest second)',
+                ),
+              ),
+            ],
           ),
-          ListTile(
-            title: const Text('Summarization'),
-            onTap: () {},
+          const ExpansionTile(
+            title: Text('Summarization'),
           ),
-          ListTile(
-            title: const Text('Translation'),
-            onTap: () {},
+          const ExpansionTile(
+            title: Text('Translation'),
           ),
-          ListTile(
-            title: const Text('Text-to-speech'),
-            onTap: () {},
+          ExpansionTile(
+            title: const Text('Text-to-Speech'),
+            children: [
+              RadioListTile(
+                value: 'OpenAI',
+                groupValue: 'OpenAI',
+                onChanged: (str) {},
+                title: const Text('OpenAI'),
+                subtitle: const Text(r'$0.015 per 1K characters'),
+              ),
+            ],
           ),
-          ListTile(
-            title: const Text('Text-to-image'),
-            onTap: () {},
+          const ExpansionTile(
+            title: Text('Text-to-Image'),
+          ),
+          const Divider(),
+          const ExpansionTile(
+            title: Text('OpenAI Configuration'),
+          ),
+          const ExpansionTile(
+            title: Text('Ollama Configuration'),
           ),
         ],
       ),
