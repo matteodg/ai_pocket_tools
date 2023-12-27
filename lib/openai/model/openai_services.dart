@@ -12,41 +12,30 @@ import 'package:path/path.dart';
 import 'package:riverpod/riverpod.dart';
 
 final transcriptionServiceProvider = Provider<TranscriptionService>(
-  (ref) => ref.watch(openaiServicesProvider),
+  (ref) => OpenAITranscriptionService(),
 );
 
 final translationServiceProvider = Provider<TranslationService>(
-  (ref) => ref.watch(openaiServicesProvider),
+  (ref) => OpenAITranslationService(),
 );
 
 final summarizationServiceProvider = Provider<SummarizationService>(
-  (ref) => ref.watch(openaiServicesProvider),
+  (ref) => OpenAISummarizationService(),
 );
 
 final imageDescriptionServiceProvider = Provider<ImageDescriptionService>(
-  (ref) => ref.watch(openaiServicesProvider),
+  (ref) => OpenAIImageDescriptionService(),
 );
 
 final textToImageServiceProvider = Provider<TextToImageService>(
-  (ref) => ref.watch(openaiServicesProvider),
+  (ref) => OpenAITextToImageService(),
 );
 
 final textToSpeechServiceProvider = Provider<TextToSpeechService>(
-  (ref) => ref.watch(openaiServicesProvider),
+  (ref) => OpenAITextToSpeechService(),
 );
 
-final openaiServicesProvider = Provider<OpenAIServices>(
-  (ref) => OpenAIServices(),
-);
-
-class OpenAIServices
-    implements
-        TranscriptionService,
-        TranslationService,
-        SummarizationService,
-        ImageDescriptionService,
-        TextToSpeechService,
-        TextToImageService {
+class OpenAITranscriptionService implements TranscriptionService {
   @override
   TaskEither<String, String> transcribe(File audio) {
     return TaskEither.tryCatch(
@@ -63,7 +52,9 @@ class OpenAIServices
       (error, stackTrace) => 'Cannot transcribe ${audio.path}: $error',
     );
   }
+}
 
+class OpenAITranslationService implements TranslationService {
   @override
   TaskEither<String, String> translate(String text, String language) {
     return TaskEither.tryCatch(
@@ -103,7 +94,9 @@ class OpenAIServices
       (error, stackTrace) => 'Cannot translate: $error',
     );
   }
+}
 
+class OpenAISummarizationService implements SummarizationService {
   @override
   TaskEither<String, String> summarize(String text) {
     return TaskEither.tryCatch(
@@ -144,7 +137,9 @@ class OpenAIServices
       (error, stackTrace) => 'Cannot summarize: $error',
     );
   }
+}
 
+class OpenAIImageDescriptionService implements ImageDescriptionService {
   @override
   TaskEither<String, String> describe(String imageUrl) {
     return TaskEither.tryCatch(
@@ -178,7 +173,9 @@ class OpenAIServices
       (error, stackTrace) => 'Cannot describe $imageUrl: $error',
     );
   }
+}
 
+class OpenAITextToImageService implements TextToImageService {
   @override
   TaskEither<String, String> textToImage(String text, File file) {
     return TaskEither.tryCatch(
@@ -198,7 +195,9 @@ class OpenAIServices
       (error, stackTrace) => 'Cannot create an image file: $error',
     );
   }
+}
 
+class OpenAITextToSpeechService implements TextToSpeechService {
   @override
   TaskEither<String, File> textToSpeech(String text, File file, String ext) {
     final format = OpenAIAudioSpeechResponseFormat.values //
