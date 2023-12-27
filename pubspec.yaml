@@ -23,6 +23,7 @@ dependencies:
   fpdart: ^1.1.0
   http: ^1.1.2
   intl: ^0.18.1
+  money2: ^4.0.0
   path: ^1.8.3
   path_provider: ^2.1.1
   riverpod: ^2.4.9

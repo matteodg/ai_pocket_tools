@@ -1,13 +1,16 @@
 import 'dart:io';
 
 import 'package:ai_pocket_tools/shared_items/model/image_description.dart';
+import 'package:ai_pocket_tools/shared_items/model/shared_items_model.dart';
 import 'package:ai_pocket_tools/shared_items/model/summarization_service.dart';
 import 'package:ai_pocket_tools/shared_items/model/text_to_image_service.dart';
 import 'package:ai_pocket_tools/shared_items/model/text_to_speech_service.dart';
 import 'package:ai_pocket_tools/shared_items/model/transcription_service.dart';
 import 'package:ai_pocket_tools/shared_items/model/translation_service.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:dart_openai/dart_openai.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:money2/money2.dart';
 import 'package:path/path.dart';
 import 'package:riverpod/riverpod.dart';
 
@@ -51,6 +54,32 @@ class OpenAITranscriptionService implements TranscriptionService {
       },
       (error, stackTrace) => 'Cannot transcribe ${audio.path}: $error',
     );
+  }
+
+  // Model    Usage
+  // Whisper  $0.006 / minute (rounded to the nearest second)
+  @override
+  Future<Option<Money>> calculateInputCost(AudioItem audioItem) async {
+    final audioPlayer = AudioPlayer();
+    await audioPlayer.setSource(DeviceFileSource(audioItem.file.path));
+    final duration = await audioPlayer.getDuration();
+    await audioPlayer.dispose();
+    return optionOf(duration)
+        .map((duration) => duration.inMilliseconds)
+        .map((milliseconds) => milliseconds / 1000.0)
+        .map((seconds) => seconds / 100.0)
+        .map((minorUnits) => minorUnits.ceil())
+        .map(
+          (minorUnits) => Money.fromIntWithCurrency(
+            minorUnits,
+            Currency.create('USD', 2),
+          ),
+        );
+  }
+
+  @override
+  String getUsage() {
+    return r'$0.0060 / minute (rounded to the nearest second)';
   }
 }
 
@@ -217,5 +246,27 @@ class OpenAITextToSpeechService implements TextToSpeechService {
       },
       (error, stackTrace) => 'Cannot create an audio file using TTS: $error',
     );
+  }
+
+  // Model    Usage
+  // TTS      $0.015 / 1K characters
+  // TTS HD   $0.030 / 1K characters
+  @override
+  Future<Option<Money>> calculateInputCost(TextItem textItem) {
+    final cost = textItem.text.length / 1000.0 * 0.015;
+    final minorUnits = (cost * 100.0).ceil();
+    return Future.value(
+      Some(
+        Money.fromIntWithCurrency(
+          minorUnits,
+          Currency.create('USD', 2),
+        ),
+      ),
+    );
+  }
+
+  @override
+  String getUsage() {
+    return r'$0.015 per 1K characters';
   }
 }
