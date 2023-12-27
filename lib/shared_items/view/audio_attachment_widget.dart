@@ -1,3 +1,4 @@
+import 'package:ai_pocket_tools/openai/model/openai_services.dart';
 import 'package:ai_pocket_tools/shared_items/model/conversions_service.dart';
 import 'package:ai_pocket_tools/shared_items/model/shared_items_model.dart';
 import 'package:ai_pocket_tools/shared_items/view/file_attachment_widget.dart';
@@ -24,32 +25,27 @@ class AudioAttachmentWidget extends FileAttachmentWidget<AudioItem> {
   @override
   List<Widget> buildButtons(BuildContext context, WidgetRef ref) {
     final conversionsService = ref.read(conversionsServiceProvider);
+    final transcriptionService = ref.read(transcriptionServiceProvider);
     final sharedItemsModel = ref.read(sharedItemsModelProvider.notifier);
     return [
-      IconButton.filledTonal(
+      createExecuteButton(
+        context: context,
+        ref: ref,
+        priceModel: transcriptionService,
         onPressed: () async {
-          final state = ScaffoldMessenger.of(context);
           final taskEither = conversionsService.transcribe(item);
           final either = await taskEither.run();
-          state.showSnackBar(
-            either.fold(
-              (String error) {
-                return SnackBar(
-                  content: Text('Failure: $error'),
-                  showCloseIcon: true,
-                  behavior: SnackBarBehavior.fixed,
-                  duration: const Duration(seconds: 10),
-                );
-              },
-              (textItem) {
-                sharedItemsModel.addItem(textItem);
-                return const SnackBar(
-                  content: Text('Transcription complete'),
-                  showCloseIcon: false,
-                  behavior: SnackBarBehavior.floating,
-                );
-              },
-            ),
+          either.fold(
+            (error) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Failure: $error')),
+              );
+              return null;
+            },
+            (textItem) {
+              sharedItemsModel.addItem(textItem);
+              return null;
+            },
           );
         },
         tooltip: 'Transcribe',

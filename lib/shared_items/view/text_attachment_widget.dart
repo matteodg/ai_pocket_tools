@@ -1,3 +1,4 @@
+import 'package:ai_pocket_tools/openai/model/openai_services.dart';
 import 'package:ai_pocket_tools/shared_items/model/conversions_service.dart';
 import 'package:ai_pocket_tools/shared_items/model/shared_items_model.dart';
 import 'package:ai_pocket_tools/shared_items/view/attachment_widget.dart';
@@ -21,6 +22,7 @@ class TextAttachmentWidget extends AttachmentWidget<TextItem> {
   @override
   List<Widget> buildButtons(BuildContext context, WidgetRef ref) {
     final conversionsService = ref.read(conversionsServiceProvider);
+    final textToSpeechService = ref.read(textToSpeechServiceProvider);
     final sharedItemsModel = ref.read(sharedItemsModelProvider.notifier);
     return [
       IconButton.filledTonal(
@@ -44,20 +46,27 @@ class TextAttachmentWidget extends AttachmentWidget<TextItem> {
         tooltip: 'Text-to-Image',
         icon: const Icon(Icons.image),
       ),
-      IconButton.filledTonal(
+      createExecuteButton(
+        context: context,
+        ref: ref,
+        priceModel: textToSpeechService,
         onPressed: () async {
-          final state = ScaffoldMessenger.of(context);
           final taskEither = conversionsService.textToSpeech(item);
           final either = await taskEither.run();
           either.fold(
             (error) {
-              state.showSnackBar(
+              ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Failure: $error')),
               );
               return null;
             },
             (audioItem) {
               sharedItemsModel.addItem(audioItem);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Successful conversion'),
+                ),
+              );
               return null;
             },
           );
