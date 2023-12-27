@@ -13,6 +13,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:money2/money2.dart';
 import 'package:path/path.dart';
 import 'package:riverpod/riverpod.dart';
+import 'package:tokencost/tokencost.dart';
 
 final transcriptionServiceProvider = Provider<TranscriptionService>(
   (ref) => OpenAITranscriptionService(),
@@ -97,15 +98,7 @@ class OpenAITranslationService implements TranslationService {
               role: OpenAIChatMessageRole.system,
               content: [
                 OpenAIChatCompletionChoiceMessageContentItemModel.text(
-                  '''
-                  You are a highly skilled AI trained in language comprehension
-                  and translation. I would like you to read the following text
-                  and translate it into $language. Aim to retain the most important
-                  points, providing a coherent and readable translation that could
-                  help a person understand the main points of the discussion
-                  without needing to read the entire text. Please avoid
-                  unnecessary details or tangential points.
-                  ''',
+                  _createSystemPrompt(language),
                 ),
               ],
             ),
@@ -123,6 +116,44 @@ class OpenAITranslationService implements TranslationService {
       (error, stackTrace) => 'Cannot translate: $error',
     );
   }
+
+  String _createSystemPrompt(String language) {
+    return '''
+      You are a highly skilled AI trained in language comprehension
+      and translation. I would like you to read the following text
+      and translate it into $language. Aim to retain the most important
+      points, providing a coherent and readable translation that could
+      help a person understand the main points of the discussion
+      without needing to read the entire text. Please avoid
+      unnecessary details or tangential points.
+      ''';
+  }
+
+  @override
+  Future<Option<Money>> calculateInputCost(TextItem textItem) {
+    final systemPrompt = _createSystemPrompt('English');
+    final prompt = [
+      {'role': 'system', 'content': systemPrompt},
+      {'role': 'user', 'content': textItem.text},
+    ];
+    final tpuPromptCost = calculatePromptCost(
+      prompt,
+      'gpt-4-1106-preview',
+    );
+    return Future.value(
+      Some(
+        Money.fromIntWithCurrency(
+          (tpuPromptCost / usdPerTpu * 100).ceil(),
+          Currency.create('USD', 2),
+        ),
+      ),
+    );
+  }
+
+  @override
+  String getUsage() {
+    return '${tokenCosts['gpt-4-1106-preview']!['prompt']} TPUs per token';
+  }
 }
 
 class OpenAISummarizationService implements SummarizationService {
@@ -139,16 +170,7 @@ class OpenAISummarizationService implements SummarizationService {
               role: OpenAIChatMessageRole.system,
               content: [
                 OpenAIChatCompletionChoiceMessageContentItemModel.text(
-                  '''
-                  You are a highly skilled AI trained in language comprehension
-                  and summarization. I would like you to read the following text
-                  and summarize it into a concise abstract paragraph. Aim to
-                  retain the most important points, providing a coherent and
-                  readable summary that could help a person understand the main
-                  points of the discussion without needing to read the entire
-                  text. Please avoid unnecessary details or tangential points.
-                  Keep the same language of the input text.
-                  ''',
+                  _createSystemPrompt(),
                 ),
               ],
             ),
@@ -165,6 +187,45 @@ class OpenAISummarizationService implements SummarizationService {
       },
       (error, stackTrace) => 'Cannot summarize: $error',
     );
+  }
+
+  String _createSystemPrompt() {
+    return '''
+      You are a highly skilled AI trained in language comprehension
+      and summarization. I would like you to read the following text
+      and summarize it into a concise abstract paragraph. Aim to
+      retain the most important points, providing a coherent and
+      readable summary that could help a person understand the main
+      points of the discussion without needing to read the entire
+      text. Please avoid unnecessary details or tangential points.
+      Keep the same language of the input text.
+      ''';
+  }
+
+  @override
+  Future<Option<Money>> calculateInputCost(TextItem textItem) {
+    final systemPrompt = _createSystemPrompt();
+    final prompt = [
+      {'role': 'system', 'content': systemPrompt},
+      {'role': 'user', 'content': textItem.text},
+    ];
+    final tpuPromptCost = calculatePromptCost(
+      prompt,
+      'gpt-4-1106-preview',
+    );
+    return Future.value(
+      Some(
+        Money.fromIntWithCurrency(
+          (tpuPromptCost / usdPerTpu * 100).ceil(),
+          Currency.create('USD', 2),
+        ),
+      ),
+    );
+  }
+
+  @override
+  String getUsage() {
+    return '${tokenCosts['gpt-4-1106-preview']!['prompt']} TPUs per token';
   }
 }
 

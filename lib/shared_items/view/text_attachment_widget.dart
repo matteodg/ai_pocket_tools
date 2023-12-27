@@ -23,6 +23,8 @@ class TextAttachmentWidget extends AttachmentWidget<TextItem> {
   List<Widget> buildButtons(BuildContext context, WidgetRef ref) {
     final conversionsService = ref.read(conversionsServiceProvider);
     final textToSpeechService = ref.read(textToSpeechServiceProvider);
+    final translationService = ref.read(translationServiceProvider);
+    final summarizationService = ref.read(summarizationServiceProvider);
     final sharedItemsModel = ref.read(sharedItemsModelProvider.notifier);
     return [
       IconButton.filledTonal(
@@ -74,59 +76,69 @@ class TextAttachmentWidget extends AttachmentWidget<TextItem> {
         tooltip: 'Text-to-Speech',
         icon: const Icon(Icons.volume_up),
       ),
-      IconButton.filledTonal(
+      createExecuteButton(
+        context: context,
+        ref: ref,
+        priceModel: summarizationService,
         onPressed: () async {
-          final state = ScaffoldMessenger.of(context);
           final taskEither = conversionsService.summarize(item);
           final either = await taskEither.run();
-          state.showSnackBar(
-            either.fold(
-              (error) {
-                return SnackBar(
+
+          either.fold(
+            (error) {
+              return ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
                   content: Text('Failure: $error'),
                   showCloseIcon: true,
                   behavior: SnackBarBehavior.fixed,
                   duration: const Duration(seconds: 10),
-                );
-              },
-              (textItem) {
-                sharedItemsModel.addItem(textItem);
-                return const SnackBar(
+                ),
+              );
+            },
+            (textItem) {
+              sharedItemsModel.addItem(textItem);
+              return ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
                   content: Text('Summary complete'),
                   showCloseIcon: false,
                   behavior: SnackBarBehavior.floating,
-                );
-              },
-            ),
+                ),
+              );
+            },
           );
         },
         tooltip: 'Summarize',
         icon: const Icon(Icons.summarize),
       ),
-      IconButton.filledTonal(
+      createExecuteButton(
+        context: context,
+        ref: ref,
+        priceModel: translationService,
         onPressed: () async {
-          final state = ScaffoldMessenger.of(context);
           final taskEither = conversionsService.translate(item);
           final either = await taskEither.run();
-          state.showSnackBar(
-            either.fold(
-              (error) {
-                return SnackBar(
+
+          either.fold(
+            (error) {
+              return ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
                   content: Text('Failure: $error'),
                   showCloseIcon: true,
                   behavior: SnackBarBehavior.fixed,
                   duration: const Duration(seconds: 10),
-                );
-              },
-              (textItem) {
-                sharedItemsModel.addItem(textItem);
-                return const SnackBar(
+                ),
+              );
+            },
+            (textItem) {
+              sharedItemsModel.addItem(textItem);
+              return ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
                   content: Text('Translation complete'),
                   showCloseIcon: false,
                   behavior: SnackBarBehavior.floating,
-                );
-              },
-            ),
+                ),
+              );
+            },
           );
         },
         tooltip: 'Translate',
