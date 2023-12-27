@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:ai_pocket_tools/shared_items/model/image_description.dart';
 import 'package:ai_pocket_tools/shared_items/model/summarization_service.dart';
-import 'package:ai_pocket_tools/shared_items/model/text_to_image.dart';
-import 'package:ai_pocket_tools/shared_items/model/text_to_speech.dart';
+import 'package:ai_pocket_tools/shared_items/model/text_to_image_service.dart';
+import 'package:ai_pocket_tools/shared_items/model/text_to_speech_service.dart';
 import 'package:ai_pocket_tools/shared_items/model/transcription_service.dart';
 import 'package:ai_pocket_tools/shared_items/model/translation_service.dart';
 import 'package:dart_openai/dart_openai.dart';
