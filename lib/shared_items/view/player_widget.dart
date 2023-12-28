@@ -29,9 +29,14 @@ class _PlayerWidgetState extends State<PlayerWidget> {
 
   bool get _isPaused => _playerState == PlayerState.paused;
 
-  // String get _durationText => _duration?.toString().split('.').first ?? '';
-  //
-  // String get _positionText => _position?.toString().split('.').first ?? '';
+  bool get _isStopped =>
+      _playerState == PlayerState.stopped ||
+      _playerState == PlayerState.completed ||
+      _playerState == PlayerState.disposed;
+
+  String get _durationText => _duration?.toString().split('.').first ?? '';
+
+  String get _positionText => _position?.toString().split('.').first ?? '';
 
   AudioPlayer get player => widget.player;
 
@@ -52,6 +57,39 @@ class _PlayerWidgetState extends State<PlayerWidget> {
           }),
         );
     _initStreams();
+  }
+
+  void _initStreams() {
+    _durationSubscription = player.onDurationChanged.listen(
+      (duration) {
+        setState(
+          () => _duration = duration,
+        );
+      },
+    );
+
+    _positionSubscription = player.onPositionChanged.listen(
+      (position) => setState(
+        () => _position = position,
+      ),
+    );
+
+    _playerCompleteSubscription = player.onPlayerComplete.listen(
+      (event) {
+        setState(() {
+          _playerState = PlayerState.stopped;
+          _position = Duration.zero;
+        });
+      },
+    );
+
+    _playerStateChangeSubscription = player.onPlayerStateChanged.listen(
+      (state) {
+        setState(() {
+          _playerState = state;
+        });
+      },
+    );
   }
 
   @override
@@ -107,7 +145,7 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                   Slider(
                     onChanged: (value) {
                       final duration = _duration;
-                      if (duration == null) {
+                      if (_isStopped || duration == null) {
                         return;
                       }
                       final position = value * duration.inMilliseconds;
@@ -121,14 +159,14 @@ class _PlayerWidgetState extends State<PlayerWidget> {
                         ? _position!.inMilliseconds / _duration!.inMilliseconds
                         : 0.0,
                   ),
-                  // Text(
-                  //   _position != null
-                  //       ? '$_positionText / $_durationText'
-                  //       : _duration != null
-                  //           ? _durationText
-                  //           : '',
-                  //   style: const TextStyle(fontSize: 12),
-                  // ),
+                  Text(
+                    _position != null
+                        ? '$_positionText / $_durationText'
+                        : _duration != null
+                            ? _durationText
+                            : '',
+                    style: const TextStyle(fontSize: 12),
+                  ),
                 ],
               ),
             ),
@@ -138,33 +176,8 @@ class _PlayerWidgetState extends State<PlayerWidget> {
     );
   }
 
-  void _initStreams() {
-    _durationSubscription = player.onDurationChanged.listen((duration) {
-      setState(() => _duration = duration);
-    });
-
-    _positionSubscription = player.onPositionChanged.listen(
-      (p) => setState(() => _position = p),
-    );
-
-    _playerCompleteSubscription = player.onPlayerComplete.listen((event) {
-      setState(() {
-        _playerState = PlayerState.stopped;
-        _position = Duration.zero;
-      });
-    });
-
-    _playerStateChangeSubscription =
-        player.onPlayerStateChanged.listen((state) {
-      setState(() {
-        _playerState = state;
-      });
-    });
-  }
-
   Future<void> _play() async {
     await player.play(widget.source);
-    // await player.resume();
     setState(() => _playerState = PlayerState.playing);
   }
 
