@@ -173,9 +173,6 @@ class TextAttachmentWidget extends AttachmentWidget<TextItem> {
                 final state = ScaffoldMessenger.of(context);
                 try {
                   await Share.share(item.text);
-                  state.showSnackBar(
-                    const SnackBar(content: Text('Successfully shared')),
-                  );
                 } catch (e) {
                   state.showSnackBar(
                     SnackBar(content: Text('Failed to share: $e')),
