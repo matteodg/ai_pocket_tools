@@ -1,3 +1,4 @@
+import 'package:ai_pocket_tools/openai/model/openai_services.dart';
 import 'package:ai_pocket_tools/shared_items/model/conversions_service.dart';
 import 'package:ai_pocket_tools/shared_items/model/shared_items_model.dart';
 import 'package:ai_pocket_tools/shared_items/view/file_attachment_widget.dart';
@@ -22,22 +23,30 @@ class ImageAttachmentWidget extends FileAttachmentWidget<ImageItem> {
   List<Widget> buildButtons(BuildContext context, WidgetRef ref) {
     final conversionsService = ref.read(conversionsServiceProvider);
     final sharedItemsModel = ref.read(sharedItemsModelProvider.notifier);
+    final imageDescriptionService = ref.read(imageDescriptionServiceProvider);
     return [
-      IconButton.filledTonal(
+      createExecuteButton(
+        context: context,
+        ref: ref,
+        priceModel: imageDescriptionService,
         onPressed: () async {
-          final state = ScaffoldMessenger.of(context);
           final taskEither = conversionsService.describe(item);
           final either = await taskEither.run();
-          state.showSnackBar(
+          if (!context.mounted) return;
+
+          final text = await either.fold(
+            Future.value,
+            (textItem) async {
+              await sharedItemsModel.addItem(textItem);
+              return 'Image described successfully';
+            },
+          );
+          if (!context.mounted) return;
+
+          ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                await either.fold(
-                  (failure) => failure,
-                  (textItem) async {
-                    await sharedItemsModel.addItem(textItem);
-                    return 'Image described successfully';
-                  },
-                ),
+                text,
               ),
             ),
           );

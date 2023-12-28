@@ -242,9 +242,7 @@ class OpenAIImageDescriptionService implements ImageDescriptionService {
               role: OpenAIChatMessageRole.system,
               content: [
                 OpenAIChatCompletionChoiceMessageContentItemModel.text(
-                  '''
-                  What do you see in the following image?
-                  ''',
+                  _createSystemPrompt(),
                 ),
               ],
             ),
@@ -262,6 +260,43 @@ class OpenAIImageDescriptionService implements ImageDescriptionService {
       },
       (error, stackTrace) => 'Cannot describe $imageUrl: $error',
     );
+  }
+
+  String _createSystemPrompt() {
+    return 'What do you see in the following image?';
+  }
+
+  @override
+  Future<Option<Money>> calculateInputCost(ImageItem imageItem) {
+    final systemPrompt = _createSystemPrompt();
+    final prompt = [
+      {
+        'role': 'system',
+        'content': systemPrompt,
+      },
+      {
+        'role': 'user',
+        'content': 'https://pporkexpiycphabuuvqt.supabase.co/storage/v1/object/'
+            'public/uploads/_4a6c9b59-6714-4c02-9e26-0bf32e6d9069.jpeg',
+      },
+    ];
+    final tpuPromptCost = calculatePromptCost(
+      prompt,
+      'gpt-4-vision-preview',
+    );
+    return Future.value(
+      Some(
+        Money.fromIntWithCurrency(
+          (tpuPromptCost / usdPerTpu * 100).ceil(),
+          Currency.create('USD', 2),
+        ),
+      ),
+    );
+  }
+
+  @override
+  String getUsage() {
+    return '${tokenCosts['gpt-4-vision-preview']!['prompt']} TPUs per token';
   }
 }
 
