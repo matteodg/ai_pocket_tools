@@ -25,16 +25,19 @@ class TextAttachmentWidget extends AttachmentWidget<TextItem> {
     final textToSpeechService = ref.read(textToSpeechServiceProvider);
     final translationService = ref.read(translationServiceProvider);
     final summarizationService = ref.read(summarizationServiceProvider);
+    final textToImageService = ref.read(textToImageServiceProvider);
     final sharedItemsModel = ref.read(sharedItemsModelProvider.notifier);
     return [
-      IconButton.filledTonal(
+      createExecuteButton(
+        context: context,
+        ref: ref,
+        priceModel: textToImageService,
         onPressed: () async {
-          final state = ScaffoldMessenger.of(context);
           final taskEither = conversionsService.textToImage(item);
           final either = await taskEither.run();
           either.fold(
             (error) {
-              state.showSnackBar(
+              ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Failure: $error')),
               );
               return null;

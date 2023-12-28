@@ -266,24 +266,108 @@ class OpenAIImageDescriptionService implements ImageDescriptionService {
 }
 
 class OpenAITextToImageService implements TextToImageService {
+  // Model     Quality   Resolution  Price
+  // DALL·E 3  Standard  1024×1024   $0.040 / image
+  //           Standard  1024×1792   $0.080 / image
+  //           Standard  1792×1024   $0.080 / image
+  // DALL·E 3  HD        1024×1024   $0.080 / image
+  //           HD        1024×1792   $0.120 / image
+  //           HD        1792×1024   $0.120 / image
+  // DALL·E 2            1024×1024   $0.020 / image
+  //                     512×512     $0.018 / image
+  //                     256×256     $0.016 / image
+  final _pricesTable = <(String, OpenAIImageQuality?, OpenAIImageSize), double>{
+    (
+      'dall-e-3',
+      null,
+      OpenAIImageSize.size1024,
+    ): 0.040,
+    (
+      'dall-e-3',
+      null,
+      OpenAIImageSize.size1792Horizontal,
+    ): 0.080,
+    (
+      'dall-e-3',
+      null,
+      OpenAIImageSize.size1792Vertical,
+    ): 0.080,
+    (
+      'dall-e-3',
+      OpenAIImageQuality.hd,
+      OpenAIImageSize.size1024,
+    ): 0.080,
+    (
+      'dall-e-3',
+      OpenAIImageQuality.hd,
+      OpenAIImageSize.size1792Horizontal,
+    ): 0.120,
+    (
+      'dall-e-3',
+      OpenAIImageQuality.hd,
+      OpenAIImageSize.size1792Vertical,
+    ): 0.120,
+    (
+      'dall-e-2',
+      null,
+      OpenAIImageSize.size1024,
+    ): 0.020,
+    (
+      'dall-e-2',
+      null,
+      OpenAIImageSize.size512,
+    ): 0.018,
+    (
+      'dall-e-2',
+      null,
+      OpenAIImageSize.size256,
+    ): 0.016,
+  };
+  final _model = 'dall-e-3';
+  final _quality = OpenAIImageQuality.hd;
+  final _size = OpenAIImageSize.size1024;
+
   @override
   TaskEither<String, String> textToImage(String text, File file) {
     return TaskEither.tryCatch(
       () async {
         OpenAI.apiKey = const String.fromEnvironment('OPENAI_API_KEY');
         final response = await OpenAI.instance.image.create(
-          model: 'dall-e-3',
+          model: _model,
           prompt: text,
           n: 1,
           responseFormat: OpenAIImageResponseFormat.url,
-          size: OpenAIImageSize.size1024,
+          size: _size,
           style: OpenAIImageStyle.vivid,
-          quality: OpenAIImageQuality.hd,
+          quality: _quality,
         );
         return response.data.first.url!;
       },
       (error, stackTrace) => 'Cannot create an image file: $error',
     );
+  }
+
+  @override
+  Future<Option<Money>> calculateInputCost(TextItem textItem) {
+    final price = _pricesTable[(_model, _quality, _size)];
+    return Future.value(
+      Some(
+        Money.fromIntWithCurrency(
+          (price! * 100).ceil(),
+          Currency.create('USD', 2),
+        ),
+      ),
+    );
+  }
+
+  @override
+  String getUsage() {
+    final price = _pricesTable[(_model, _quality, _size)];
+    final money = Money.fromIntWithCurrency(
+      (price! * 100).ceil(),
+      Currency.create('USD', 2),
+    );
+    return '$money per image';
   }
 }
 
