@@ -1,12 +1,12 @@
 import 'package:ai_pocket_tools/l10n/l10n.dart';
 import 'package:ai_pocket_tools/shared_items/model/media_provider.dart';
 import 'package:ai_pocket_tools/shared_items/model/shared_items_model.dart';
-import 'package:ai_pocket_tools/shared_items/view/audio_attachment_widget.dart';
 import 'package:ai_pocket_tools/shared_items/view/floating_action_menu.dart';
-import 'package:ai_pocket_tools/shared_items/view/image_attachment_widget.dart';
 import 'package:ai_pocket_tools/shared_items/view/services_drawer.dart';
-import 'package:ai_pocket_tools/shared_items/view/text_attachment_widget.dart';
-import 'package:ai_pocket_tools/shared_items/view/video_attachment_widget.dart';
+import 'package:ai_pocket_tools/shared_items/view/widgets/audio_attachment_widget.dart';
+import 'package:ai_pocket_tools/shared_items/view/widgets/image_attachment_widget.dart';
+import 'package:ai_pocket_tools/shared_items/view/widgets/text_attachment_widget.dart';
+import 'package:ai_pocket_tools/shared_items/view/widgets/video_attachment_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_handler/share_handler.dart';
