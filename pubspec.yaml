@@ -31,7 +31,7 @@ dependencies:
   share_handler: ^0.0.20
   share_plus: ^7.2.1
   supabase_flutter: ^2.0.2
-  tokencost: ^0.0.4
+  tokencost: ^0.0.5
   uuid: ^4.2.2
   video_player: ^2.8.1
 
