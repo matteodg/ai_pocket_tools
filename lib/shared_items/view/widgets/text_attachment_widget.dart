@@ -1,4 +1,4 @@
-import 'package:ai_pocket_tools/openai/model/openai_services.dart';
+import 'package:ai_pocket_tools/config.dart';
 import 'package:ai_pocket_tools/shared_items/model/conversions_service.dart';
 import 'package:ai_pocket_tools/shared_items/model/shared_items_model.dart';
 import 'package:ai_pocket_tools/shared_items/view/widgets/attachment_widget.dart';
@@ -32,11 +32,11 @@ class TextAttachmentWidget extends AttachmentWidget<TextItem> {
 
   @override
   List<Widget> buildButtons(BuildContext context, WidgetRef ref) {
-    final conversionsService = ref.read(conversionsServiceProvider);
-    final textToSpeechService = ref.read(textToSpeechServiceProvider);
-    final translationService = ref.read(translationServiceProvider);
-    final summarizationService = ref.read(summarizationServiceProvider);
-    final textToImageService = ref.read(textToImageServiceProvider);
+    final conversionsService = ref.watch(conversionsServiceProvider);
+    final textToSpeechService = ref.read(selectedTextToSpeechServiceProvider);
+    final translationService = ref.read(selectedTranslationServiceProvider);
+    final summarizationService = ref.read(selectedSummarizationServiceProvider);
+    final textToImageService = ref.read(selectedTextToImageServiceProvider);
     final sharedItemsModel = ref.read(sharedItemsModelProvider.notifier);
     return [
       createExecuteButton(

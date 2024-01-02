@@ -19,11 +19,11 @@ final openaiTranscriptionServiceProvider = Provider<OpenAITranscriptionService>(
   (ref) => OpenAITranscriptionService(),
 );
 
-final translationServiceProvider = Provider<TranslationService>(
+final openaiTranslationServiceProvider = Provider<OpenAITranslationService>(
   (ref) => OpenAITranslationService(),
 );
 
-final summarizationServiceProvider = Provider<SummarizationService>(
+final openaiSummarizationServiceProvider = Provider<OpenAISummarizationService>(
   (ref) => OpenAISummarizationService(),
 );
 
@@ -32,11 +32,11 @@ final openaiImageDescriptionServiceProvider =
   (ref) => OpenAIImageDescriptionService(),
 );
 
-final textToImageServiceProvider = Provider<TextToImageService>(
+final openaiTextToImageServiceProvider = Provider<OpenAITextToImageService>(
   (ref) => OpenAITextToImageService(),
 );
 
-final textToSpeechServiceProvider = Provider<TextToSpeechService>(
+final openaiTextToSpeechServiceProvider = Provider<OpenAITextToSpeechService>(
   (ref) => OpenAITextToSpeechService(),
 );
 

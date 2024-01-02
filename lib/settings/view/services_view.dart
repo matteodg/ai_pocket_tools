@@ -1,6 +1,5 @@
 import 'package:ai_pocket_tools/config.dart';
-import 'package:ai_pocket_tools/shared_items/model/image_description.dart';
-import 'package:ai_pocket_tools/shared_items/model/transcription_service.dart';
+import 'package:ai_pocket_tools/shared_items/model/price_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,68 +17,35 @@ class _ServicesViewState extends ConsumerState<ServicesView> {
   Widget build(BuildContext context) {
     return ListView(
       children: [
-        const DrawerHeader(
-          child: Text('Configuration'),
+        _createTile(
+          'Image Description',
+          listImageDescriptionServiceProvider,
+          selectedImageDescriptionServiceProvider,
         ),
-        ExpansionTile(
-          title: const Text('Image Description'),
-          children: ref
-              .watch(listImageDescriptionServiceProvider)
-              .map(
-                (item) => RadioListTile<ImageDescriptionService>(
-                  value: item,
-                  groupValue:
-                      ref.watch(selectedImageDescriptionServiceProvider),
-                  onChanged: (selectedItem) {
-                    ref
-                        .read(selectedImageDescriptionServiceProvider.notifier)
-                        .state = selectedItem!;
-                  },
-                  title: Text(item.runtimeType.toString()),
-                  subtitle: Text(item.getUsage()),
-                ),
-              )
-              .toList(),
+        _createTile(
+          'Transcription',
+          listTranscriptionServiceProvider,
+          selectedTranscriptionServiceProvider,
         ),
-        ExpansionTile(
-          title: const Text('Transcription'),
-          children: ref
-              .watch(listTranscriptionServiceProvider)
-              .map(
-                (item) => RadioListTile<TranscriptionService>(
-                  value: item,
-                  groupValue: ref.watch(selectedTranscriptionServiceProvider),
-                  onChanged: (selectedItem) {
-                    ref
-                        .read(selectedTranscriptionServiceProvider.notifier)
-                        .state = selectedItem!;
-                  },
-                  title: Text(item.runtimeType.toString()),
-                  subtitle: Text(item.getUsage()),
-                ),
-              )
-              .toList(),
+        _createTile(
+          'Summarization',
+          listSummarizationServiceProvider,
+          selectedSummarizationServiceProvider,
         ),
-        const ExpansionTile(
-          title: Text('Summarization'),
+        _createTile(
+          'Translation',
+          listTranslationServiceProvider,
+          selectedTranslationServiceProvider,
         ),
-        const ExpansionTile(
-          title: Text('Translation'),
+        _createTile(
+          'Text-to-Speech',
+          listTextToSpeechServiceProvider,
+          selectedTextToSpeechServiceProvider,
         ),
-        ExpansionTile(
-          title: const Text('Text-to-Speech'),
-          children: [
-            RadioListTile(
-              value: 'OpenAI',
-              groupValue: 'OpenAI',
-              onChanged: (str) {},
-              title: const Text('OpenAI'),
-              subtitle: const Text(r'$0.015 per 1K characters'),
-            ),
-          ],
-        ),
-        const ExpansionTile(
-          title: Text('Text-to-Image'),
+        _createTile(
+          'Text-to-Image',
+          listTextToImageServiceProvider,
+          selectedTextToImageServiceProvider,
         ),
         const Divider(),
         const ExpansionTile(
@@ -91,4 +57,26 @@ class _ServicesViewState extends ConsumerState<ServicesView> {
       ],
     );
   }
+
+  Widget _createTile<T extends PriceModel>(
+    String title,
+    Provider<List<T>> list,
+    StateProvider<T> selected,
+  ) =>
+      ExpansionTile(
+        title: Text(title),
+        children: ref
+            .watch(list)
+            .map(
+              (item) => RadioListTile<T>(
+                value: item,
+                groupValue: ref.watch(selected),
+                onChanged: (selectedItem) =>
+                    ref.read(selected.notifier).state = selectedItem!,
+                title: Text(item.runtimeType.toString()),
+                subtitle: Text(item.getUsage()),
+              ),
+            )
+            .toList(),
+      );
 }

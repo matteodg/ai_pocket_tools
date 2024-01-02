@@ -29,6 +29,7 @@ class ImageAttachmentWidget extends FileAttachmentWidget<ImageItem> {
   @override
   List<Widget> buildButtons(BuildContext context, WidgetRef ref) {
     final sharedItemsModel = ref.read(sharedItemsModelProvider.notifier);
+    final conversionsService = ref.watch(conversionsServiceProvider);
     final imageDescriptionService =
         ref.watch(selectedImageDescriptionServiceProvider);
     return [
@@ -37,7 +38,6 @@ class ImageAttachmentWidget extends FileAttachmentWidget<ImageItem> {
         ref: ref,
         priceModel: imageDescriptionService,
         onPressed: () async {
-          final conversionsService = ref.read(conversionsServiceProvider);
           final taskEither = conversionsService.describe(item);
           final either = await taskEither.run();
           if (!context.mounted) return;

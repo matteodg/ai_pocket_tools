@@ -31,6 +31,7 @@ class AudioAttachmentWidget extends FileAttachmentWidget<AudioItem> {
 
   @override
   List<Widget> buildButtons(BuildContext context, WidgetRef ref) {
+    final conversionsService = ref.watch(conversionsServiceProvider);
     final transcriptionService =
         ref.watch(selectedTranscriptionServiceProvider);
     final sharedItemsModel = ref.read(sharedItemsModelProvider.notifier);
@@ -40,7 +41,6 @@ class AudioAttachmentWidget extends FileAttachmentWidget<AudioItem> {
         ref: ref,
         priceModel: transcriptionService,
         onPressed: () async {
-          final conversionsService = ref.read(conversionsServiceProvider);
           final taskEither = conversionsService.transcribe(item);
           final either = await taskEither.run();
           either.fold(
