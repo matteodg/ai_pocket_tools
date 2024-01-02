@@ -1,7 +1,6 @@
 import 'package:ai_pocket_tools/shared_items/model/media_provider.dart';
 import 'package:ai_pocket_tools/shared_items/model/shared_items_model.dart';
 import 'package:ai_pocket_tools/shared_items/view/floating_action_menu.dart';
-import 'package:ai_pocket_tools/shared_items/view/services_drawer.dart';
 import 'package:ai_pocket_tools/shared_items/view/widgets/audio_attachment_widget.dart';
 import 'package:ai_pocket_tools/shared_items/view/widgets/image_attachment_widget.dart';
 import 'package:ai_pocket_tools/shared_items/view/widgets/text_attachment_widget.dart';
@@ -76,7 +75,6 @@ class _SharedItemsViewState extends ConsumerState<SharedItemsView> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndTop,
       floatingActionButton: const FloatingActionMenu(),
-      drawer: const ServicesDrawer(),
       body: Center(
         child: asyncSharedItemsList.when(
           data: (items) {
