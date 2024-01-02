@@ -38,6 +38,7 @@ class FloatingActionMenu extends ConsumerWidget {
                 return AlertDialog(
                   title: const Text('Content'),
                   content: TextField(
+                    maxLines: null,
                     controller: textEditingController,
                   ),
                   actions: [
