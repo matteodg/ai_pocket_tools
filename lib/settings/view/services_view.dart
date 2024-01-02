@@ -84,26 +84,36 @@ class _ServicesViewState extends ConsumerState<ServicesView> {
       title: Text(title),
       leading: icon,
       description: Text(
-        ref.watch(selected).runtimeType.toString().substring(0, 6),
+        ref.watch(selected).getDisplayName(),
       ),
       onPressed: (context) {
         return showModalBottomSheet<ListView>(
           context: context,
           builder: (context) {
-            return ListView(
-              children: ref
-                  .watch(list)
-                  .map(
-                    (item) => RadioListTile<T>(
-                      value: item,
-                      groupValue: ref.watch(selected),
-                      onChanged: (selectedItem) =>
-                          ref.read(selected.notifier).state = selectedItem!,
-                      title: Text(item.runtimeType.toString().substring(0, 6)),
-                      subtitle: Text(item.getUsage()),
-                    ),
-                  )
-                  .toList(),
+            return Column(
+              children: [
+                const SizedBox(height: 10),
+                Text(title, style: Theme.of(context).textTheme.titleMedium),
+                const Divider(),
+                Expanded(
+                  child: ListView(
+                    children: ref
+                        .watch(list)
+                        .map(
+                          (item) => RadioListTile<T>(
+                            value: item,
+                            groupValue: ref.watch(selected),
+                            onChanged: (selectedItem) => ref
+                                .read(selected.notifier)
+                                .state = selectedItem!,
+                            title: Text(item.getDisplayName()),
+                            subtitle: Text(item.getUsage()),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ),
+              ],
             );
           },
         );

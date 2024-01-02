@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:ai_pocket_tools/shared_items/model/image_description.dart';
+import 'package:ai_pocket_tools/shared_items/model/price_model.dart';
 import 'package:ai_pocket_tools/shared_items/model/shared_items_model.dart';
 import 'package:ai_pocket_tools/shared_items/model/summarization_service.dart';
 import 'package:ai_pocket_tools/shared_items/model/text_to_image_service.dart';
@@ -40,7 +41,8 @@ final openaiTextToSpeechServiceProvider = Provider<OpenAITextToSpeechService>(
   (ref) => OpenAITextToSpeechService(),
 );
 
-class OpenAITranscriptionService implements TranscriptionService {
+class OpenAITranscriptionService extends OpenAIService<AudioItem>
+    implements TranscriptionService {
   @override
   TaskEither<String, String> transcribe(File audio) {
     return TaskEither.tryCatch(
@@ -85,7 +87,8 @@ class OpenAITranscriptionService implements TranscriptionService {
   }
 }
 
-class OpenAITranslationService implements TranslationService {
+class OpenAITranslationService extends OpenAIService<TextItem>
+    implements TranslationService {
   @override
   TaskEither<String, String> translate(String text, String language) {
     return TaskEither.tryCatch(
@@ -157,7 +160,8 @@ class OpenAITranslationService implements TranslationService {
   }
 }
 
-class OpenAISummarizationService implements SummarizationService {
+class OpenAISummarizationService extends OpenAIService<TextItem>
+    implements SummarizationService {
   @override
   TaskEither<String, String> summarize(String text) {
     return TaskEither.tryCatch(
@@ -230,7 +234,8 @@ class OpenAISummarizationService implements SummarizationService {
   }
 }
 
-class OpenAIImageDescriptionService implements ImageDescriptionService {
+class OpenAIImageDescriptionService extends OpenAIService<ImageItem>
+    implements ImageDescriptionService {
   @override
   TaskEither<String, String> describe(String imageUrl) {
     return TaskEither.tryCatch(
@@ -304,7 +309,8 @@ class OpenAIImageDescriptionService implements ImageDescriptionService {
   }
 }
 
-class OpenAITextToImageService implements TextToImageService {
+class OpenAITextToImageService extends OpenAIService<TextItem>
+    implements TextToImageService {
   // Model     Quality   Resolution  Price
   // DALL·E 3  Standard  1024×1024   $0.040 / image
   //           Standard  1024×1792   $0.080 / image
@@ -410,7 +416,8 @@ class OpenAITextToImageService implements TextToImageService {
   }
 }
 
-class OpenAITextToSpeechService implements TextToSpeechService {
+class OpenAITextToSpeechService extends OpenAIService<TextItem>
+    implements TextToSpeechService {
   @override
   TaskEither<String, File> textToSpeech(String text, File file, String ext) {
     final format = OpenAIAudioSpeechResponseFormat.values //
@@ -452,5 +459,12 @@ class OpenAITextToSpeechService implements TextToSpeechService {
   @override
   String getUsage() {
     return r'$0.015 per 1K characters';
+  }
+}
+
+abstract class OpenAIService<T extends SharedItem> implements PriceModel<T> {
+  @override
+  String getDisplayName() {
+    return 'OpenAI';
   }
 }
