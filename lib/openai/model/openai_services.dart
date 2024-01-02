@@ -15,7 +15,7 @@ import 'package:path/path.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:tokencost/tokencost.dart';
 
-final transcriptionServiceProvider = Provider<TranscriptionService>(
+final openaiTranscriptionServiceProvider = Provider<OpenAITranscriptionService>(
   (ref) => OpenAITranscriptionService(),
 );
 

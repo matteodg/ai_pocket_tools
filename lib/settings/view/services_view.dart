@@ -1,10 +1,20 @@
+import 'package:ai_pocket_tools/config.dart';
+import 'package:ai_pocket_tools/openai/model/openai_services.dart';
+import 'package:ai_pocket_tools/shared_items/model/image_description.dart';
+import 'package:ai_pocket_tools/shared_items/model/transcription_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ServicesView extends StatelessWidget {
+class ServicesView extends ConsumerStatefulWidget {
   const ServicesView({
     super.key,
   });
 
+  @override
+  ConsumerState<ServicesView> createState() => _ServicesViewState();
+}
+
+class _ServicesViewState extends ConsumerState<ServicesView> {
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -31,17 +41,22 @@ class ServicesView extends StatelessWidget {
         ),
         ExpansionTile(
           title: const Text('Transcription'),
-          children: [
-            RadioListTile(
-              value: 'OpenAI',
-              groupValue: 'OpenAI',
-              onChanged: (str) {},
-              title: const Text('OpenAI'),
-              subtitle: const Text(
-                r'$0.0060 / minute (rounded to the nearest second)',
-              ),
-            ),
-          ],
+          children: ref
+              .watch(listTranscriptionServiceProvider)
+              .map(
+                (item) => RadioListTile<TranscriptionService>(
+                  value: item,
+                  groupValue: ref.watch(selectedTranscriptionServiceProvider),
+                  onChanged: (selectedItem) {
+                    ref
+                        .read(selectedTranscriptionServiceProvider.notifier)
+                        .state = selectedItem!;
+                  },
+                  title: Text(item.runtimeType.toString()),
+                  subtitle: Text(item.getUsage()),
+                ),
+              )
+              .toList(),
         ),
         const ExpansionTile(
           title: Text('Summarization'),

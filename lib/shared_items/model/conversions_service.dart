@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:ai_pocket_tools/config.dart';
 import 'package:ai_pocket_tools/openai/model/openai_services.dart';
 import 'package:ai_pocket_tools/shared_items/model/image_description.dart';
 import 'package:ai_pocket_tools/shared_items/model/local_storage_service.dart';
@@ -19,7 +20,7 @@ final conversionsServiceProvider = Provider<ConversionsService>((ref) {
   return ConversionsService(
     ref.watch(localStorageServiceProvider),
     ref.watch(remoteStorageServiceProvider),
-    ref.watch(transcriptionServiceProvider),
+    ref.watch(selectedTranscriptionServiceProvider),
     ref.watch(translationServiceProvider),
     ref.watch(summarizationServiceProvider),
     ref.watch(imageDescriptionServiceProvider),

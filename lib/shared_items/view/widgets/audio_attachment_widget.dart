@@ -1,4 +1,4 @@
-import 'package:ai_pocket_tools/openai/model/openai_services.dart';
+import 'package:ai_pocket_tools/config.dart';
 import 'package:ai_pocket_tools/shared_items/model/conversions_service.dart';
 import 'package:ai_pocket_tools/shared_items/model/shared_items_model.dart';
 import 'package:ai_pocket_tools/shared_items/view/player_widget.dart';
@@ -31,8 +31,8 @@ class AudioAttachmentWidget extends FileAttachmentWidget<AudioItem> {
 
   @override
   List<Widget> buildButtons(BuildContext context, WidgetRef ref) {
-    final conversionsService = ref.read(conversionsServiceProvider);
-    final transcriptionService = ref.read(transcriptionServiceProvider);
+    final transcriptionService =
+        ref.watch(selectedTranscriptionServiceProvider);
     final sharedItemsModel = ref.read(sharedItemsModelProvider.notifier);
     return [
       createExecuteButton(
@@ -40,6 +40,7 @@ class AudioAttachmentWidget extends FileAttachmentWidget<AudioItem> {
         ref: ref,
         priceModel: transcriptionService,
         onPressed: () async {
+          final conversionsService = ref.read(conversionsServiceProvider);
           final taskEither = conversionsService.transcribe(item);
           final either = await taskEither.run();
           either.fold(
