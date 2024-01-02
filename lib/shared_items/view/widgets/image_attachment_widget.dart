@@ -1,4 +1,4 @@
-import 'package:ai_pocket_tools/openai/model/openai_services.dart';
+import 'package:ai_pocket_tools/config.dart';
 import 'package:ai_pocket_tools/shared_items/model/conversions_service.dart';
 import 'package:ai_pocket_tools/shared_items/model/shared_items_model.dart';
 import 'package:ai_pocket_tools/shared_items/view/widgets/file_attachment_widget.dart';
@@ -28,15 +28,16 @@ class ImageAttachmentWidget extends FileAttachmentWidget<ImageItem> {
 
   @override
   List<Widget> buildButtons(BuildContext context, WidgetRef ref) {
-    final conversionsService = ref.read(conversionsServiceProvider);
     final sharedItemsModel = ref.read(sharedItemsModelProvider.notifier);
-    final imageDescriptionService = ref.read(imageDescriptionServiceProvider);
+    final imageDescriptionService =
+        ref.watch(selectedImageDescriptionServiceProvider);
     return [
       createExecuteButton(
         context: context,
         ref: ref,
         priceModel: imageDescriptionService,
         onPressed: () async {
+          final conversionsService = ref.read(conversionsServiceProvider);
           final taskEither = conversionsService.describe(item);
           final either = await taskEither.run();
           if (!context.mounted) return;

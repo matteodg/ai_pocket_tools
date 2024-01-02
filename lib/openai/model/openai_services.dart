@@ -27,7 +27,8 @@ final summarizationServiceProvider = Provider<SummarizationService>(
   (ref) => OpenAISummarizationService(),
 );
 
-final imageDescriptionServiceProvider = Provider<ImageDescriptionService>(
+final openaiImageDescriptionServiceProvider =
+    Provider<OpenAIImageDescriptionService>(
   (ref) => OpenAIImageDescriptionService(),
 );
 

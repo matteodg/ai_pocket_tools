@@ -1,4 +1,5 @@
 import 'package:ai_pocket_tools/openai/model/openai_services.dart';
+import 'package:ai_pocket_tools/shared_items/model/image_description.dart';
 import 'package:ai_pocket_tools/shared_items/model/transcription_service.dart';
 import 'package:riverpod/riverpod.dart';
 
@@ -15,3 +16,16 @@ final listTranscriptionServiceProvider = Provider<List<TranscriptionService>>(
   },
 );
 
+final selectedImageDescriptionServiceProvider =
+    StateProvider<ImageDescriptionService>(
+  (ref) => ref.watch(openaiImageDescriptionServiceProvider),
+);
+
+final listImageDescriptionServiceProvider =
+    Provider<List<ImageDescriptionService>>(
+  (ref) {
+    return [
+      ref.watch(openaiImageDescriptionServiceProvider),
+    ];
+  },
+);

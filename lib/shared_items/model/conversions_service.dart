@@ -23,7 +23,7 @@ final conversionsServiceProvider = Provider<ConversionsService>((ref) {
     ref.watch(selectedTranscriptionServiceProvider),
     ref.watch(translationServiceProvider),
     ref.watch(summarizationServiceProvider),
-    ref.watch(imageDescriptionServiceProvider),
+    ref.watch(selectedImageDescriptionServiceProvider),
     ref.watch(textToImageServiceProvider),
     ref.watch(textToSpeechServiceProvider),
   );

@@ -1,5 +1,4 @@
 import 'package:ai_pocket_tools/config.dart';
-import 'package:ai_pocket_tools/openai/model/openai_services.dart';
 import 'package:ai_pocket_tools/shared_items/model/image_description.dart';
 import 'package:ai_pocket_tools/shared_items/model/transcription_service.dart';
 import 'package:flutter/material.dart';
@@ -24,20 +23,23 @@ class _ServicesViewState extends ConsumerState<ServicesView> {
         ),
         ExpansionTile(
           title: const Text('Image Description'),
-          children: [
-            RadioListTile(
-              value: 'OpenAI',
-              groupValue: 'OpenAI',
-              onChanged: (str) {},
-              title: const Text('OpenAI'),
-            ),
-            RadioListTile(
-              value: 'Ollama',
-              groupValue: 'OpenAI',
-              onChanged: (str) {},
-              title: const Text('Ollama'),
-            ),
-          ],
+          children: ref
+              .watch(listImageDescriptionServiceProvider)
+              .map(
+                (item) => RadioListTile<ImageDescriptionService>(
+                  value: item,
+                  groupValue:
+                      ref.watch(selectedImageDescriptionServiceProvider),
+                  onChanged: (selectedItem) {
+                    ref
+                        .read(selectedImageDescriptionServiceProvider.notifier)
+                        .state = selectedItem!;
+                  },
+                  title: Text(item.runtimeType.toString()),
+                  subtitle: Text(item.getUsage()),
+                ),
+              )
+              .toList(),
         ),
         ExpansionTile(
           title: const Text('Transcription'),
