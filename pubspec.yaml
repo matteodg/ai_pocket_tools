@@ -29,6 +29,7 @@ dependencies:
   path_provider: ^2.1.1
   riverpod: ^2.4.9
   riverpod_annotation: ^2.3.3
+  settings_ui: ^2.0.2
   share_handler: ^0.0.20
   share_plus: ^7.2.1
   supabase_flutter: ^2.0.2

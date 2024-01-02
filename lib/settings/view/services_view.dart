@@ -2,6 +2,7 @@ import 'package:ai_pocket_tools/config.dart';
 import 'package:ai_pocket_tools/shared_items/model/price_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:settings_ui/settings_ui.dart';
 
 class ServicesView extends ConsumerStatefulWidget {
   const ServicesView({
@@ -15,68 +16,98 @@ class ServicesView extends ConsumerStatefulWidget {
 class _ServicesViewState extends ConsumerState<ServicesView> {
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        _createTile(
-          'Image Description',
-          listImageDescriptionServiceProvider,
-          selectedImageDescriptionServiceProvider,
+    return SettingsList(
+      sections: [
+        SettingsSection(
+          title: const Text('Services'),
+          tiles: <SettingsTile>[
+            _createTile(
+              'Image Description',
+              const Icon(Icons.description),
+              listImageDescriptionServiceProvider,
+              selectedImageDescriptionServiceProvider,
+            ),
+            _createTile(
+              'Transcription',
+              const Icon(Icons.transcribe),
+              listTranscriptionServiceProvider,
+              selectedTranscriptionServiceProvider,
+            ),
+            _createTile(
+              'Summarization',
+              const Icon(Icons.summarize),
+              listSummarizationServiceProvider,
+              selectedSummarizationServiceProvider,
+            ),
+            _createTile(
+              'Translation',
+              const Icon(Icons.translate),
+              listTranslationServiceProvider,
+              selectedTranslationServiceProvider,
+            ),
+            _createTile(
+              'Text-to-Speech',
+              const Icon(Icons.volume_up),
+              listTextToSpeechServiceProvider,
+              selectedTextToSpeechServiceProvider,
+            ),
+            _createTile(
+              'Text-to-Image',
+              const Icon(Icons.image),
+              listTextToImageServiceProvider,
+              selectedTextToImageServiceProvider,
+            ),
+          ],
         ),
-        _createTile(
-          'Transcription',
-          listTranscriptionServiceProvider,
-          selectedTranscriptionServiceProvider,
-        ),
-        _createTile(
-          'Summarization',
-          listSummarizationServiceProvider,
-          selectedSummarizationServiceProvider,
-        ),
-        _createTile(
-          'Translation',
-          listTranslationServiceProvider,
-          selectedTranslationServiceProvider,
-        ),
-        _createTile(
-          'Text-to-Speech',
-          listTextToSpeechServiceProvider,
-          selectedTextToSpeechServiceProvider,
-        ),
-        _createTile(
-          'Text-to-Image',
-          listTextToImageServiceProvider,
-          selectedTextToImageServiceProvider,
-        ),
-        const Divider(),
-        const ExpansionTile(
-          title: Text('OpenAI Configuration'),
-        ),
-        const ExpansionTile(
-          title: Text('Ollama Configuration'),
+        SettingsSection(
+          title: const Text('Providers'),
+          tiles: <SettingsTile>[
+            SettingsTile.navigation(
+              title: const Text('OpenAI Configuration'),
+            ),
+            SettingsTile.navigation(
+              title: const Text('Ollama Configuration'),
+            ),
+          ],
         ),
       ],
     );
   }
 
-  Widget _createTile<T extends PriceModel>(
+  SettingsTile _createTile<T extends PriceModel>(
     String title,
+    Icon icon,
     Provider<List<T>> list,
     StateProvider<T> selected,
-  ) =>
-      ExpansionTile(
-        title: Text(title),
-        children: ref
-            .watch(list)
-            .map(
-              (item) => RadioListTile<T>(
-                value: item,
-                groupValue: ref.watch(selected),
-                onChanged: (selectedItem) =>
-                    ref.read(selected.notifier).state = selectedItem!,
-                title: Text(item.runtimeType.toString()),
-                subtitle: Text(item.getUsage()),
-              ),
-            )
-            .toList(),
-      );
+  ) {
+    return SettingsTile.navigation(
+      title: Text(title),
+      leading: icon,
+      description: Text(
+        ref.watch(selected).runtimeType.toString().substring(0, 6),
+      ),
+      onPressed: (context) {
+        return showModalBottomSheet<ListView>(
+          context: context,
+          builder: (context) {
+            return ListView(
+              children: ref
+                  .watch(list)
+                  .map(
+                    (item) => RadioListTile<T>(
+                      value: item,
+                      groupValue: ref.watch(selected),
+                      onChanged: (selectedItem) =>
+                          ref.read(selected.notifier).state = selectedItem!,
+                      title: Text(item.runtimeType.toString().substring(0, 6)),
+                      subtitle: Text(item.getUsage()),
+                    ),
+                  )
+                  .toList(),
+            );
+          },
+        );
+      },
+    );
+  }
 }
