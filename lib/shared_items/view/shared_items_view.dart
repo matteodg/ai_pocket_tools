@@ -1,4 +1,3 @@
-import 'package:ai_pocket_tools/l10n/l10n.dart';
 import 'package:ai_pocket_tools/shared_items/model/media_provider.dart';
 import 'package:ai_pocket_tools/shared_items/model/shared_items_model.dart';
 import 'package:ai_pocket_tools/shared_items/view/floating_action_menu.dart';
@@ -71,10 +70,9 @@ class _SharedItemsViewState extends ConsumerState<SharedItemsView> {
   @override
   Widget build(BuildContext context) {
     final asyncSharedItemsList = ref.watch(sharedItemsModelProvider);
-    final l10n = context.l10n;
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.aiPocketToolsAppBarTitle),
+        title: const Text('Shared Items'),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndTop,
       floatingActionButton: const FloatingActionMenu(),
