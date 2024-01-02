@@ -118,24 +118,24 @@ class _PlayerWidgetState extends State<PlayerWidget> {
       children: <Widget>[
         Row(
           children: [
-            IconButton(
+            IconButton.filledTonal(
               key: const Key('play_button'),
               onPressed: _isPlaying ? null : _play,
-              iconSize: 32,
+              iconSize: 24,
               icon: const Icon(Icons.play_arrow),
               color: color,
             ),
-            IconButton(
+            IconButton.filledTonal(
               key: const Key('pause_button'),
               onPressed: _isPlaying ? _pause : null,
-              iconSize: 32,
+              iconSize: 24,
               icon: const Icon(Icons.pause),
               color: color,
             ),
-            IconButton(
+            IconButton.filledTonal(
               key: const Key('stop_button'),
               onPressed: _isPlaying || _isPaused ? _stop : null,
-              iconSize: 32,
+              iconSize: 24,
               icon: const Icon(Icons.stop),
               color: color,
             ),
