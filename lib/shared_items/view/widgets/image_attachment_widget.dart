@@ -13,7 +13,14 @@ class ImageAttachmentWidget extends FileAttachmentWidget<ImageItem> {
   Widget buildMainWidget(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
-        Text(basename(item.file.path), textAlign: TextAlign.center),
+        Row(
+          children: [
+            const Icon(Icons.image),
+            const SizedBox(width: 8),
+            Text(basename(item.file.path), textAlign: TextAlign.center),
+          ],
+        ),
+        const SizedBox(height: 8),
         Image.file(item.file),
       ],
     );

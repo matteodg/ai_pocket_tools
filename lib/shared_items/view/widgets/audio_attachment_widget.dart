@@ -16,7 +16,14 @@ class AudioAttachmentWidget extends FileAttachmentWidget<AudioItem> {
     final path = item.file.path;
     return Column(
       children: [
-        Text(basename(path), textAlign: TextAlign.start),
+        Row(
+          children: [
+            const Icon(Icons.music_note),
+            const SizedBox(width: 8),
+            Text(basename(path), textAlign: TextAlign.start),
+          ],
+        ),
+        const SizedBox(height: 8),
         PlayerWidget(DeviceFileSource(path)),
       ],
     );

@@ -36,7 +36,14 @@ class _VideoAttachmentWidgetState extends ConsumerState<VideoAttachmentWidget> {
     final sharedItemsModel = ref.read(sharedItemsModelProvider.notifier);
     return Column(
       children: [
-        Text('Video: ${basename(widget.videoItem.file.path)}'),
+        Row(
+          children: [
+            const Icon(Icons.video_file),
+            const SizedBox(width: 8),
+            Text('Video: ${basename(widget.videoItem.file.path)}'),
+          ],
+        ),
+        const SizedBox(height: 8),
         if (_controller.value.isInitialized)
           Column(
             children: [

@@ -13,9 +13,20 @@ class TextAttachmentWidget extends AttachmentWidget<TextItem> {
 
   @override
   Widget buildMainWidget(BuildContext context, WidgetRef ref) {
-    return MarkdownBody(
-      data: item.text,
-      selectable: true,
+    return Column(
+      children: [
+        const Row(
+          children: [
+            Icon(Icons.message),
+            SizedBox(width: 8),
+          ],
+        ),
+        const SizedBox(height: 8),
+        MarkdownBody(
+          data: item.text,
+          selectable: true,
+        ),
+      ],
     );
   }
 
