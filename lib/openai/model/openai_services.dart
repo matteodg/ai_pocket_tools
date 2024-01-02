@@ -297,7 +297,10 @@ class OpenAIImageDescriptionService implements ImageDescriptionService {
 
   @override
   String getUsage() {
-    return '${tokenCosts['gpt-4-vision-preview']!['prompt']} TPUs per token';
+    final tpuTokenCost = tokenCosts['gpt-4-vision-preview']!;
+    final promptCost = tpuTokenCost['prompt']! / usdPerTpu;
+    final completionCost = tpuTokenCost['completion']! / usdPerTpu;
+    return '\$$promptCost / prompt token\n\$$completionCost / completion token';
   }
 }
 
