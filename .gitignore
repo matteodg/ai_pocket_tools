@@ -111,5 +111,6 @@ app.*.map.json
 !.idea/dictionaries/
 !.idea/runConfigurations/
 
-# api keys
+# api keys and environment variables files
 api-keys*.json
+env*.json
