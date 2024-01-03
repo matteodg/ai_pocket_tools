@@ -1,3 +1,4 @@
+import 'package:ai_pocket_tools/ollama/model/ollama_services.dart';
 import 'package:ai_pocket_tools/openai/model/openai_services.dart';
 import 'package:ai_pocket_tools/shared_items/model/image_description.dart';
 import 'package:ai_pocket_tools/shared_items/model/summarization_service.dart';
@@ -43,6 +44,7 @@ final listSummarizationServiceProvider = Provider<List<SummarizationService>>(
   (ref) {
     return [
       ref.watch(openaiSummarizationServiceProvider),
+      ref.watch(ollamaSummarizationServiceProvider),
     ];
   },
 );
