@@ -28,11 +28,9 @@ final selectedImageDescriptionServiceProvider =
 
 final listImageDescriptionServiceProvider =
     Provider<List<ImageDescriptionService>>(
-  (ref) {
-    return [
-      ref.watch(openaiImageDescriptionServiceProvider),
-    ];
-  },
+  (ref) => [
+    ref.watch(openaiImageDescriptionServiceProvider),
+  ],
 );
 
 final selectedSummarizationServiceProvider =
@@ -41,12 +39,10 @@ final selectedSummarizationServiceProvider =
 );
 
 final listSummarizationServiceProvider = Provider<List<SummarizationService>>(
-  (ref) {
-    return [
-      ref.watch(openaiSummarizationServiceProvider),
-      ref.watch(ollamaSummarizationServiceProvider),
-    ];
-  },
+  (ref) => [
+    ref.watch(openaiSummarizationServiceProvider),
+    ref.watch(ollamaSummarizationServiceProvider),
+  ],
 );
 
 final selectedTranslationServiceProvider = StateProvider<TranslationService>(
@@ -54,11 +50,9 @@ final selectedTranslationServiceProvider = StateProvider<TranslationService>(
 );
 
 final listTranslationServiceProvider = Provider<List<TranslationService>>(
-  (ref) {
-    return [
-      ref.watch(openaiTranslationServiceProvider),
-    ];
-  },
+  (ref) => [
+    ref.watch(openaiTranslationServiceProvider),
+  ],
 );
 
 final selectedTextToSpeechServiceProvider = StateProvider<TextToSpeechService>(
@@ -66,11 +60,9 @@ final selectedTextToSpeechServiceProvider = StateProvider<TextToSpeechService>(
 );
 
 final listTextToSpeechServiceProvider = Provider<List<TextToSpeechService>>(
-  (ref) {
-    return [
-      ref.watch(openaiTextToSpeechServiceProvider),
-    ];
-  },
+  (ref) => [
+    ref.watch(openaiTextToSpeechServiceProvider),
+  ],
 );
 
 final selectedTextToImageServiceProvider = StateProvider<TextToImageService>(
@@ -78,9 +70,7 @@ final selectedTextToImageServiceProvider = StateProvider<TextToImageService>(
 );
 
 final listTextToImageServiceProvider = Provider<List<TextToImageService>>(
-  (ref) {
-    return [
-      ref.watch(openaiTextToImageServiceProvider),
-    ];
-  },
+  (ref) => [
+    ref.watch(openaiTextToImageServiceProvider),
+  ],
 );
