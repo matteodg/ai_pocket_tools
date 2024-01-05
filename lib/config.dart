@@ -83,5 +83,6 @@ final selectedChatServiceProvider = StateProvider<ChatService>(
 final listChatServiceProvider = Provider<List<ChatService>>(
   (ref) => [
     ref.watch(openaiChatServiceProvider),
+    ref.watch(ollamaChatServiceProvider),
   ],
 );
