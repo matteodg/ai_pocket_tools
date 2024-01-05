@@ -20,7 +20,7 @@ class _ChatPageState extends ConsumerState<ChatPage> {
   List<types.TextMessage> _messages = [];
   final _user = const types.User(
     id: 'user',
-    firstName: 'John',
+    firstName: 'User',
     role: types.Role.user,
   );
   final _admin = const types.User(
@@ -102,13 +102,26 @@ class _ChatPageState extends ConsumerState<ChatPage> {
           padding: const EdgeInsets.all(16),
           child: SizedBox(
             width: messageWidth.toDouble(),
-            child: MarkdownBody(
-              data: message.text,
-              styleSheet: MarkdownStyleSheet(
-                p: const TextStyle(
-                  color: Colors.black,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  message.author.firstName ?? '',
+                  style: const TextStyle(
+                    fontSize: 10,
+                    color: Colors.grey,
+                  ),
                 ),
-              ),
+                MarkdownBody(
+                  selectable: true,
+                  data: message.text,
+                  styleSheet: MarkdownStyleSheet(
+                    p: const TextStyle(
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),

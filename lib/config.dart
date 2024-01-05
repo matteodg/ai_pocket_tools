@@ -1,4 +1,5 @@
 import 'package:ai_pocket_tools/chat/model/chat_service.dart';
+import 'package:ai_pocket_tools/langchain/model/langchain_services.dart';
 import 'package:ai_pocket_tools/ollama/model/ollama_services.dart';
 import 'package:ai_pocket_tools/openai/model/openai_services.dart';
 import 'package:ai_pocket_tools/shared_items/model/image_description.dart';
@@ -77,11 +78,12 @@ final listTextToImageServiceProvider = Provider<List<TextToImageService>>(
 );
 
 final selectedChatServiceProvider = StateProvider<ChatService>(
-  (ref) => ref.watch(openaiChatServiceProvider),
+  (ref) => ref.watch(langChainChatServiceProvider),
 );
 
 final listChatServiceProvider = Provider<List<ChatService>>(
   (ref) => [
+    ref.watch(langChainChatServiceProvider),
     ref.watch(openaiChatServiceProvider),
     ref.watch(ollamaChatServiceProvider),
   ],

@@ -1,4 +1,5 @@
 import 'package:ai_pocket_tools/config.dart';
+import 'package:ai_pocket_tools/langchain/model/langchain_services.dart';
 import 'package:ai_pocket_tools/settings/view/widgets/service_settings_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -62,6 +63,17 @@ class _ServicesViewState extends ConsumerState<ServicesView> {
               leading: const Icon(Icons.chat),
               listProviders: listChatServiceProvider,
               selectedProvider: selectedChatServiceProvider,
+            ),
+          ],
+        ),
+        SettingsSection(
+          title: const Text('LangChain'),
+          tiles: <SettingsTile>[
+            ServiceSettingsTile(
+              title: const Text('LanguageModel'),
+              leading: const Icon(Icons.chat),
+              listProviders: listBaseLanguageModelProvider,
+              selectedProvider: selectedBaseLanguageModelProvider,
             ),
           ],
         ),

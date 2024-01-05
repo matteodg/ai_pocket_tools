@@ -1,9 +1,8 @@
-import 'package:ai_pocket_tools/shared_items/model/price_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:settings_ui/settings_ui.dart';
 
-class ServiceSettingsTile<T extends PriceModel> extends SettingsTile {
+class ServiceSettingsTile<T> extends SettingsTile {
   ServiceSettingsTile({
     required super.title,
     required super.leading,
@@ -25,7 +24,7 @@ class ServiceSettingsTile<T extends PriceModel> extends SettingsTile {
           title: super.title,
           leading: super.leading,
           description: Text(
-            selected.getDisplayName(),
+            selected.runtimeType.toString(),
           ),
           onPressed: (context) {
             return showModalBottomSheet<ListView>(
@@ -51,8 +50,8 @@ class ServiceSettingsTile<T extends PriceModel> extends SettingsTile {
                                     selectedItem!;
                                 Navigator.pop(context);
                               },
-                              title: Text(item.getDisplayName()),
-                              subtitle: Text(item.getUsage()),
+                              title: Text(item.runtimeType.toString()),
+                              //subtitle: Text(item.getUsage()),
                             );
                           },
                         ).toList(),
