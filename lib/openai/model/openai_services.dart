@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:ai_pocket_tools/chat/model/chat_service.dart';
 import 'package:ai_pocket_tools/shared_items/model/image_description.dart';
 import 'package:ai_pocket_tools/shared_items/model/price_model.dart';
 import 'package:ai_pocket_tools/shared_items/model/shared_items_model.dart';
@@ -10,11 +11,13 @@ import 'package:ai_pocket_tools/shared_items/model/transcription_service.dart';
 import 'package:ai_pocket_tools/shared_items/model/translation_service.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dart_openai/dart_openai.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:fpdart/fpdart.dart';
 import 'package:money2/money2.dart';
 import 'package:path/path.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:tokencost/tokencost.dart';
+import 'package:uuid/uuid.dart';
 
 final openaiTranscriptionServiceProvider = Provider<OpenAITranscriptionService>(
   (ref) => OpenAITranscriptionService(),
@@ -39,6 +42,10 @@ final openaiTextToImageServiceProvider = Provider<OpenAITextToImageService>(
 
 final openaiTextToSpeechServiceProvider = Provider<OpenAITextToSpeechService>(
   (ref) => OpenAITextToSpeechService(),
+);
+
+final openaiChatServiceProvider = Provider<OpenAIChatService>(
+  (ref) => OpenAIChatService(),
 );
 
 class OpenAITranscriptionService extends OpenAIService<AudioItem>
@@ -459,6 +466,83 @@ class OpenAITextToSpeechService extends OpenAIService<TextItem>
   @override
   String getUsage() {
     return r'$0.015 per 1K characters';
+  }
+}
+
+extension ToOpenAI on List<types.TextMessage> {
+  List<OpenAIChatCompletionChoiceMessageModel> toOpenAI() {
+    return map((msg) {
+      final role = switch (msg.author.role) {
+        null => OpenAIChatMessageRole.system,
+        types.Role.admin => OpenAIChatMessageRole.system,
+        types.Role.agent => OpenAIChatMessageRole.assistant,
+        types.Role.moderator => OpenAIChatMessageRole.system,
+        types.Role.user => OpenAIChatMessageRole.user,
+      };
+      return OpenAIChatCompletionChoiceMessageModel(
+        role: role,
+        content: [
+          OpenAIChatCompletionChoiceMessageContentItemModel.text(
+            msg.text,
+          ),
+        ],
+      );
+    }) //
+        .toList() //
+        .reversed //
+        .toList();
+  }
+}
+
+class OpenAIChatService extends OpenAIService<TextItem> implements ChatService {
+  static const model = 'gpt-3.5-turbo-1106';
+  final types.User _agent = const types.User(
+    id: 'agent',
+    firstName: model,
+    role: types.Role.agent,
+  );
+
+  @override
+  TaskEither<String, List<types.TextMessage>> sendMessage(
+    List<types.TextMessage> messages,
+    types.User user,
+  ) {
+    return TaskEither.tryCatch(() async {
+      final chatCompletionModel = await OpenAI.instance.chat.create(
+        model: model,
+        messages: messages.toOpenAI(),
+      );
+
+      final response = chatCompletionModel.choices.first.message.content! //
+          .map((m) => m.text) //
+          .reduce((value, element) => value! + element!);
+
+      final responseMessage = types.TextMessage(
+        author: _agent,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        id: const Uuid().v4(),
+        text: response!,
+      );
+
+      return <types.TextMessage>[
+        responseMessage,
+        ...messages,
+      ];
+    }, (error, stackTrace) {
+      return 'Cannot send message: $error';
+    });
+  }
+
+  @override
+  Future<Option<Money>> calculateInputCost(TextItem textItem) {
+    return Future.value(
+      some(Money.fromIntWithCurrency(0, Currency.create('USD', 2))),
+    );
+  }
+
+  @override
+  String getUsage() {
+    return r'$0.00 per message';
   }
 }
 

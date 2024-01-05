@@ -77,10 +77,11 @@ final listTextToImageServiceProvider = Provider<List<TextToImageService>>(
 );
 
 final selectedChatServiceProvider = StateProvider<ChatService>(
-  (ref) => Null as ChatService,
+  (ref) => ref.watch(openaiChatServiceProvider),
 );
 
 final listChatServiceProvider = Provider<List<ChatService>>(
   (ref) => [
+    ref.watch(openaiChatServiceProvider),
   ],
 );
