@@ -57,6 +57,12 @@ class _ServicesViewState extends ConsumerState<ServicesView> {
               listProviders: listTextToImageServiceProvider,
               selectedProvider: selectedTextToImageServiceProvider,
             ),
+            ServiceSettingsTile(
+              title: const Text('Chat'),
+              leading: const Icon(Icons.chat),
+              listProviders: listChatServiceProvider,
+              selectedProvider: selectedChatServiceProvider,
+            ),
           ],
         ),
         SettingsSection(

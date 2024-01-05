@@ -1,3 +1,4 @@
+import 'package:ai_pocket_tools/chat/model/chat_service.dart';
 import 'package:ai_pocket_tools/ollama/model/ollama_services.dart';
 import 'package:ai_pocket_tools/openai/model/openai_services.dart';
 import 'package:ai_pocket_tools/shared_items/model/image_description.dart';
@@ -72,5 +73,14 @@ final selectedTextToImageServiceProvider = StateProvider<TextToImageService>(
 final listTextToImageServiceProvider = Provider<List<TextToImageService>>(
   (ref) => [
     ref.watch(openaiTextToImageServiceProvider),
+  ],
+);
+
+final selectedChatServiceProvider = StateProvider<ChatService>(
+  (ref) => Null as ChatService,
+);
+
+final listChatServiceProvider = Provider<List<ChatService>>(
+  (ref) => [
   ],
 );
