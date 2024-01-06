@@ -1,4 +1,5 @@
 import 'package:ai_pocket_tools/chat/view/chat_page.dart';
+import 'package:ai_pocket_tools/rag/view/rag_page.dart';
 import 'package:ai_pocket_tools/settings/view/settings_page.dart';
 import 'package:ai_pocket_tools/shared_items/view/shared_items_page.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,10 @@ class _HomePageState extends State<HomePage> {
         onTap: (selectedIndex) => setState(
           () => _selectedIndex = selectedIndex,
         ),
+        iconSize: 20,
+        selectedFontSize: 12,
+        unselectedFontSize: 10,
+        type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
         items: const [
           BottomNavigationBarItem(
@@ -30,6 +35,10 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.chat),
             label: 'Chat',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.document_scanner),
+            label: 'RAG',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
@@ -42,6 +51,7 @@ class _HomePageState extends State<HomePage> {
         children: const [
           SharedItemsPage(),
           ChatPage(),
+          RagPage(),
           SettingsPage(),
         ],
       ),
