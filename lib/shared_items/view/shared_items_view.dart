@@ -45,7 +45,7 @@ class _SharedItemsViewState extends ConsumerState<SharedItemsView> {
     }
 
     final sharedItemsModel = ref.read(sharedItemsModelProvider.notifier);
-    if (media.content != null) {
+    if (media.content != null && media.content!.isNotEmpty) {
       final textItem = TextItem(const Uuid().v4(), media.content!);
       await sharedItemsModel.addItem(textItem);
     }
