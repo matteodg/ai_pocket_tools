@@ -46,8 +46,10 @@ class ServiceSettingsTile<T> extends SettingsTile {
                               value: item,
                               groupValue: selected,
                               onChanged: (selectedItem) {
-                                ref.read(selectedProvider.notifier).state =
-                                    selectedItem!;
+                                if (selectedItem != null) {
+                                  ref.read(selectedProvider.notifier).state =
+                                      selectedItem;
+                                }
                                 Navigator.pop(context);
                               },
                               title: Text(item.runtimeType.toString()),
