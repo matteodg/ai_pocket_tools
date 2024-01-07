@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:fpdart/fpdart.dart';
+import 'package:mime/mime.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:share_handler/share_handler.dart';
 import 'package:uuid/uuid.dart';
@@ -67,7 +68,29 @@ extension SharedAttachmentOnItemX on SharedAttachment {
       SharedAttachmentType.audio => optionOf(AudioItem(id, file)),
       SharedAttachmentType.image => optionOf(ImageItem(id, file)),
       SharedAttachmentType.video => optionOf(VideoItem(id, file)),
-      _ => const None(),
+      SharedAttachmentType.file => _discoverFileType(id, file),
+    };
+  }
+
+  Option<SharedItem> _discoverFileType(String id, File file) {
+    final mimeType = lookupMimeType(file.path);
+    if (mimeType != null) {
+      if (mimeType.startsWith('audio/')) {
+        return optionOf(AudioItem(id, file));
+      } else if (mimeType.startsWith('video/')) {
+        return optionOf(VideoItem(id, file));
+      } else if (mimeType.startsWith('image/')) {
+        return optionOf(ImageItem(id, file));
+      }
+    }
+    final extension = file.path.split('.').last;
+    return switch(extension) {
+      'mp3' => optionOf(AudioItem(id, file)),
+      'mp4' => optionOf(VideoItem(id, file)),
+      'jpg' => optionOf(ImageItem(id, file)),
+      'jpeg' => optionOf(ImageItem(id, file)),
+      'png' => optionOf(ImageItem(id, file)),
+      _ => none(),
     };
   }
 }
