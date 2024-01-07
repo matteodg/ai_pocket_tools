@@ -289,7 +289,7 @@ class OpenAIImageDescriptionService extends OpenAIService<ImageItem>
       },
       {
         'role': 'user',
-        'content': 'https://pporkexpiycphabuuvqt.supabase.co/storage/v1/object/'
+        'content': 'https://ngtarnkydwkdmffpldio.supabase.co/storage/v1/object/'
             'public/uploads/_4a6c9b59-6714-4c02-9e26-0bf32e6d9069.jpeg',
       },
     ];
