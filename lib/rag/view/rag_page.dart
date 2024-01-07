@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart' hide State;
 import 'package:langchain/langchain.dart';
 import 'package:langchain_openai/langchain_openai.dart';
 
-class RagPage extends StatefulWidget {
+class RagPage extends ConsumerStatefulWidget {
   const RagPage({super.key});
 
   @override
-  State<RagPage> createState() => _RagPageState();
+  ConsumerState<RagPage> createState() => _RagPageState();
 }
 
-class _RagPageState extends State<RagPage> {
-  static const apiKey = String.fromEnvironment('OPENAI_API_KEY');
+class _RagPageState extends ConsumerState<RagPage> {
   final urlController = TextEditingController(
     text: 'https://en.wikipedia.org/wiki/Oppenheimer_(film)',
   );
@@ -26,7 +26,7 @@ class _RagPageState extends State<RagPage> {
   bool _keepSeparator = true;
   final vectorStore = MemoryVectorStore(
     embeddings: OpenAIEmbeddings(
-      apiKey: apiKey,
+      apiKey: const String.fromEnvironment('OPENAI_API_KEY'),
     ),
   );
   String _text = '';
@@ -151,8 +151,15 @@ class _RagPageState extends State<RagPage> {
           ),
           ElevatedButton(
             onPressed: () async {
+              // final selected = ref.watch(selectedBaseLanguageModelProvider);
+              // final openai = ref.read(openaiBaseLanguageModelProvider);
+              // final ollama = ref.read(ollamaBaseLanguageModelProvider);
+
+              final query = queryController.text;
+              var response;
+              // if (selected == openai) {
               final llm = ChatOpenAI(
-                apiKey: apiKey,
+                apiKey: const String.fromEnvironment('OPENAI_API_KEY'),
                 defaultOptions: const ChatOpenAIOptions(
                   // temperature: 0,
                   functions: [],
@@ -170,10 +177,29 @@ class _RagPageState extends State<RagPage> {
                 retriever: vectorStore.asRetriever(),
                 combineDocumentsChain: finalQAChain,
               );
-              final query = queryController.text;
-              final res = await retrievalQA(query);
+              response = await retrievalQA(query);
+              // } else if (selected == ollama) {
+              //   final llm = ChatOllama(
+              //     baseUrl: const String.fromEnvironment('OLLAMA_BASE_URL'),
+              //     defaultOptions: const ChatOllamaOptions(
+              //       model: 'llama2:latest',
+              //     ),
+              //   );
+              //   final qaChain = ConversationChain(llm: llm);
+              //   final finalQAChain = StuffDocumentsChain(
+              //     llmChain: qaChain,
+              //   );
+              //   final retrievalQA = RetrievalQAChain(
+              //     retriever: vectorStore.asRetriever(),
+              //     combineDocumentsChain: finalQAChain,
+              //   );
+              //   response = await retrievalQA(query);
+              // } else {
+              //   throw UnimplementedError();
+              // }
+
               setState(() {
-                _text = res['result'].toString();
+                _text = response['result'].toString();
               });
               if (!mounted) return;
               ScaffoldMessenger.of(context).showSnackBar(
