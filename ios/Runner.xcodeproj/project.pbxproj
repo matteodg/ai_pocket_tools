@@ -255,7 +255,6 @@
 				071A5FD87E734508BFF44EB0 /* Pods-ShareExtension.profile-staging.xcconfig */,
 				2564E84D0553C6279004169F /* Pods-ShareExtension.profile-development.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -307,10 +306,10 @@
 				9740EEB61CF901F6004384FC /* Run Script */,
 				97C146EA1CF9000F007C117D /* Sources */,
 				97C146EB1CF9000F007C117D /* Frameworks */,
+				95B54F872B4B494900779D3B /* Embed Foundation Extensions */,
 				97C146EC1CF9000F007C117D /* Resources */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
-				95B54F872B4B494900779D3B /* Embed Foundation Extensions */,
 				1B0C85D4FE3F50E75B46BFFB /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
