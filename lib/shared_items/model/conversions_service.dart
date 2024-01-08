@@ -110,4 +110,13 @@ class ConversionsService {
       return _(localStorageService.downloadImage(url, file));
     }).map((file) => ImageItem(newId, file));
   }
+
+  TaskEither<String, ImageItem> audioToImage(AudioItem src) {
+    return TaskEither.Do((_) async {
+      final text = await _(transcribe(src));
+      final summary = await _(summarize(text));
+      final image = await _(textToImage(summary));
+      return image;
+    });
+  }
 }
