@@ -745,10 +745,10 @@ packages:
     dependency: "direct main"
     description:
       name: lazy_load_indexed_stack
-      sha256: c56c9c292048ecd8c86008617c7d77aa4057cafcdae1c5269aec6fb75019eebf
+      sha256: e581426391c44708210b1f571046320ea52dea46740d4972d9e1820b4ef94827
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.1"
+    version: "1.1.0"
   linkify:
     dependency: transitive
     description:

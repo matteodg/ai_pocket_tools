@@ -28,7 +28,7 @@ dependencies:
   langchain: ^0.3.1+1
   langchain_ollama: ^0.0.2+1
   langchain_openai: ^0.3.1+1
-  lazy_load_indexed_stack: ^1.0.1
+  lazy_load_indexed_stack: ^1.1.0
   mime: ^1.0.4
   money2: ^4.0.0
   ollama_dart: ^0.0.2
